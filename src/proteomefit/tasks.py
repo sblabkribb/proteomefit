@@ -1,14 +1,14 @@
 """과제 정의 - 라벨 · 모델 · 손실 · 조기 종료 지표 · 평가 산출물 · 결과 표 형식
 
 EssTask : 필수 유전자 이진 분류 (가중 BCE, 균주 평균 MCC 로 조기 종료)
-FitTask : 적합도 회귀 (미니 MLP 1000개, 가지별 가중 1 - CCC, 균주 평균 Spearman 으로 조기 종료)
+FitTask : 적합도 회귀 (미니 MLP 1000개, 가지별 가중 1 - CCC, 균주 평균 Spearman 으로 조기 종료, 주 지표 = 실측이 확실한 샘플)
 두 클래스는 같은 메서드를 가지며 train.train_model · cv.run_cv 가 과제와 무관하게 호출한다.
 """
 import numpy as np, pandas as pd, torch, torch.nn as nn
 from .batching import predict
 from .folds import both_classes
 from .metrics import (org_masks, mcc_org_mean, ess_metrics_by_organism, in_total, ESS_METRIC_COLS,
-                      ccc, sp_org_mean, pred_t, fit_metrics_by_organism, FIT_METRIC_COLS, PT_SUF)
+                      ccc, sp_org_mean, fit_metrics_by_organism, FIT_METRIC_COLS, SIG_SUF)
 from .models import EssNet, FitNet
 from .plots import ess_plot_title, prob_confusion_plot, scatter_plot, sign_confusion_plot
 from .train import taxon_weight, ccc_loss, bootstrap_counts
@@ -123,16 +123,16 @@ class EssTask:
 class FitTask:
     """적합도 회귀 - 라벨 = 균주별 z-정규화 fit_mean, 예측 = 미니 MLP 가지 예측의 평균 mu · 표준편차 sd
        D: data.load_samples(finite_only=True) 결과, cfg: config.Config"""
-    score, target = 'sp', 'spearman' + PT_SUF
+    score, target = 'sp', 'spearman' + SIG_SUF
     classes   = ('low', 'high')                                      # 0 기준 이진 분류 (라벨 0 / 1)
     artifacts = ('model.pt', 'history.csv', 'history.png', 'metrics_organ.csv', 'scatter.png', 'confusion.png', 'pred.npz')
     loss_label, score_label = '1 - CCC loss', 'Spearman (|comb_t| >= 2)'
-    show         = [m + s for s in (PT_SUF, '_all') for m in ('spearman', 'ccc', 'mcc', 'roc_auc')]
-    sd_cols      = ['val_sp', 'pt_cut'] + FIT_METRIC_COLS
-    summary_cols = ['val_sp', 'pt_cut'] + show
+    show         = [m + s for s in (SIG_SUF, '_all') for m in ('spearman', 'ccc', 'mcc', 'roc_auc')]
+    sd_cols      = ['val_sp'] + FIT_METRIC_COLS
+    summary_cols = ['val_sp'] + show
     top_cols = perf_cols = brief_cols = show
-    abl_cols     = ['pt_cut'] + FIT_METRIC_COLS
-    abl_show     = show + ['spearman' + PT_SUF + '_sd']
+    abl_cols     = FIT_METRIC_COLS
+    abl_show     = show + ['spearman' + SIG_SUF + '_sd']
     delta_col, genus_file = 'd_sp', 'ablation_genus_spearman.csv'
     val_candidate = None                                             # 검증 genus 후보 = 시험 genus 와 그 최근접을 뺀 전부
 
@@ -203,33 +203,28 @@ class FitTask:
 
     # ---- 평가 · 결과 표
     def evaluate(self, raw, te, P, title):
-        """테스트 (mu, sd) -> (균주별 지표 DataFrame, {'pt_cut'}). scatter.png · confusion.png · pred.npz 저장
-           주 지표 _pt = 테스트 genus 예측 t 상위 pt_q 샘플, 보조 지표 _all = 전 샘플"""
+        """테스트 (mu, sd) -> (균주별 지표 DataFrame, {}). scatter.png · confusion.png · pred.npz 저장
+           주 지표 _sig = 실측이 확실한 샘플 (|comb_t| >= t_eval), 보조 지표 _all = 전 샘플"""
         mu, sd = raw
-        q, yt = self.cfg.pt_q, self.y[te]
-        pt  = pred_t(mu, sd)                                        # 예측 t [n_test]
-        cut = np.quantile(pt, 1 - q)                                # 예측 t 상위 q 경계
-        sel = pt >= cut                                             # [n_test]
+        yt, sel = self.y[te], self.ext[te]                          # 라벨 · 실측이 확실한 샘플 마스크 [n_test]
         om  = fit_metrics_by_organism(self.D.org[te], yt, mu, sel)
-        nm_pt  = f'top {q:.0%} predicted t >= {cut:.2f} (n={int(sel.sum()):,})'
+        nm_sig = f'|comb_t| >= {self.cfg.t_eval:g} (n={int(sel.sum()):,})'
         nm_all = f'all (n={len(te):,})'
-        scatter_plot([(f'{nm_pt}\nSpearman {om["spearman" + PT_SUF].mean():.3f}  CCC {om["ccc" + PT_SUF].mean():.3f}', yt[sel], mu[sel], 1.96 * sd[sel]),
+        scatter_plot([(f'{nm_sig}\nSpearman {om["spearman" + SIG_SUF].mean():.3f}  CCC {om["ccc" + SIG_SUF].mean():.3f}', yt[sel], mu[sel], 1.96 * sd[sel]),
                       (f'{nm_all}\nSpearman {om.spearman_all.mean():.3f}  CCC {om.ccc_all.mean():.3f}', yt, mu, 1.96 * sd)],
                      P['scatter.png'], title)
-        sign_confusion_plot([(f'{nm_pt}\nMCC {om["mcc" + PT_SUF].mean():.3f}', yt[sel], mu[sel]),
+        sign_confusion_plot([(f'{nm_sig}\nMCC {om["mcc" + SIG_SUF].mean():.3f}', yt[sel], mu[sel]),
                              (f'{nm_all}\nMCC {om.mcc_all.mean():.3f}', yt, mu)], P['confusion.png'], title, self.classes)
         np.savez(P['pred.npz'], mu=mu, sd=sd)
-        return om, {'pt_cut': cut}
+        return om, {}
 
     def load_cached(self, P):
-        z = np.load(P['pred.npz'])
-        return pd.read_csv(P['metrics_organ.csv']), {'pt_cut': np.quantile(pred_t(z['mu'], z['sd']), 1 - self.cfg.pt_q)}
+        return pd.read_csv(P['metrics_organ.csv']), {}
 
     def fold_row(self, om, extra):
-        """균주별 지표 -> (주 지표가 계산된 균주 수, pt_cut + 균주 평균 · 표준편차 dict, n_pt 는 균주 합)"""
-        rest = {'pt_cut': extra['pt_cut'], **{c: om[c].mean() for c in FIT_METRIC_COLS},
-                **{c + '_sd': om[c].std() for c in FIT_METRIC_COLS}}
-        rest['n' + PT_SUF] = int(om['n' + PT_SUF].sum())
+        """균주별 지표 -> (주 지표가 계산된 균주 수, 균주 평균 · 표준편차 dict, n_sig 은 균주 합)"""
+        rest = {**{c: om[c].mean() for c in FIT_METRIC_COLS}, **{c + '_sd': om[c].std() for c in FIT_METRIC_COLS}}
+        rest['n' + SIG_SUF] = int(om['n' + SIG_SUF].sum())
         return int(om[self.target].notna().sum()), rest
 
     def genus_extra(self, te):
@@ -239,15 +234,14 @@ class FitTask:
         return ''
 
     def inner_msg(self, r):
-        return (f'| pt_cut={r["pt_cut"]:.2f} Sp={r["spearman_pt"]:.3f} MCC={r["mcc_pt"]:.3f} '
+        return (f'| Sp_sig={r["spearman_sig"]:.3f} MCC_sig={r["mcc_sig"]:.3f} '
                 f'| Sp_all={r["spearman_all"]:.3f} MCC_all={r["mcc_all"]:.3f}')
 
     def fold_msg(self, pm):
-        return (f'| pt_cut={pm("pt_cut")} Sp={pm("spearman_pt")} MCC={pm("mcc_pt")} '
+        return (f'| Sp_sig={pm("spearman_sig")} MCC_sig={pm("mcc_sig")} '
                 f'| Sp_all={pm("spearman_all")} MCC_all={pm("mcc_all")}')
 
     def predict_table(self, net, feeder, lens, smp):
-        """데이터셋이 준비된 샘플 번호 smp [m] -> DataFrame [m, 5] (gene_id, org_id, mu, sd, pt)"""
+        """데이터셋이 준비된 샘플 번호 smp [m] -> DataFrame [m, 4] (gene_id, org_id, mu, sd)"""
         mu, sd = self.predict(net, feeder, lens, smp)
-        return pd.DataFrame({'gene_id': self.D.lab.gene_id.to_numpy()[smp], 'org_id': self.D.org[smp],
-                             'mu': mu, 'sd': sd, 'pt': pred_t(mu, sd)})
+        return pd.DataFrame({'gene_id': self.D.lab.gene_id.to_numpy()[smp], 'org_id': self.D.org[smp], 'mu': mu, 'sd': sd})

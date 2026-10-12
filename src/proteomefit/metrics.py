@@ -59,10 +59,10 @@ def in_total(om):
 
 # ---------------------------------------------------------------- 회귀
 
-PT_SUF   = '_pt'                                                    # 주 지표 접미사 (예측 t 상위 샘플)
+SIG_SUF  = '_sig'                                                   # 주 지표 접미사 (significant - 실측이 0 과 구별되는 샘플, |comb_t| >= t_eval)
 REG_COLS = ['spearman', 'pearson', 'ccc']
 CLS_COLS = ['mcc', 'f1', 'recall', 'precision', 'accuracy', 'roc_auc', 'pr_auc', 'tp', 'tn', 'fp', 'fn']
-FIT_METRIC_COLS = ['n' + PT_SUF] + [m + s for s in (PT_SUF, '_all') for m in REG_COLS + CLS_COLS]
+FIT_METRIC_COLS = ['n' + SIG_SUF] + [m + s for s in (SIG_SUF, '_all') for m in REG_COLS + CLS_COLS]
 
 
 def pearson(a, b):
@@ -86,11 +86,6 @@ def sp_org_mean(masks, y_true, pred):
     return float(np.mean([spearman(pred[m], y_true[m]) for m in masks]))
 
 
-def pred_t(mu, sd):
-    """예측 평균 · 가지 간 표준편차 [m] -> 예측 t [m] = |mu| / sd (예: mu -2.0, sd 0.25 -> 8)"""
-    return np.abs(mu) / sd
-
-
 def sign_metrics(y_true, mu):
     """라벨 · 예측 평균 [m] -> 0 기준 이진 분류 지표 dict (키 = CLS_COLS, 높음 = 1, AUC 점수 = mu)"""
     t, p = (y_true > 0).astype(int), (mu > 0).astype(int)          # 실제 · 예측 클래스 [m]
@@ -104,16 +99,17 @@ def sign_metrics(y_true, mu):
 
 
 def fit_metrics(y_true, mu, sel):
-    """라벨 · 예측 평균 · 선택 마스크 [m] -> 지표 dict (키 = FIT_METRIC_COLS) - 선택 샘플(_pt) · 전 샘플(_all)"""
-    out = {'n' + PT_SUF: int(sel.sum())}
-    for suf, a, b in ((PT_SUF, mu[sel], y_true[sel]), ('_all', mu, y_true)):
+    """라벨 · 예측 평균 · 실측이 확실한 샘플 마스크 (|comb_t| >= t_eval) [m] -> 지표 dict (키 = FIT_METRIC_COLS)
+       _sig = 실측이 확실한 샘플 (주 지표), _all = 전 샘플"""
+    out = {'n' + SIG_SUF: int(sel.sum())}
+    for suf, a, b in ((SIG_SUF, mu[sel], y_true[sel]), ('_all', mu, y_true)):
         out.update({'spearman' + suf: spearman(a, b), 'pearson' + suf: pearson(a, b), 'ccc' + suf: ccc(a, b)})
         out.update({c + suf: val for c, val in sign_metrics(b, a).items()})
     return out
 
 
 def fit_metrics_by_organism(org_ids, y_true, mu, sel):
-    """균주 · 라벨 · 예측 평균 · 선택 마스크 [m] -> 균주별 지표 DataFrame [n_org, 31] (org_id, n + FIT_METRIC_COLS)"""
+    """균주 · 라벨 · 예측 평균 · 실측이 확실한 샘플 마스크 [m] -> 균주별 지표 DataFrame [n_org, 31] (org_id, n + FIT_METRIC_COLS)"""
     out = []
     for o in pd.unique(org_ids):
         m = org_ids == o

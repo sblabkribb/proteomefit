@@ -16,10 +16,9 @@ class Config:
 
     # 라벨 · 평가
     label_col: str = 'fit_mean'                      # 라벨 원천 열
-    t_eval: float  = 2.0                             # |comb_t| 기준 - 문맥 특성 otf_*strong* · 회귀 조기 종료 검증 샘플
+    t_eval: float  = 2.0                             # |comb_t| 기준 - 문맥 특성 otf_*strong* · 회귀 조기 종료 검증 샘플 · 회귀 주 지표 샘플
     thresh: float  = 0.5                             # [분류] 양성 판정 임계 확률
     w_clip: tuple  = (0.3, 3.0)                      # [회귀] 훈련 샘플 가중치 clip(|comb_t|) 범위
-    pt_q: float    = 0.10                            # [회귀] 주 지표 _pt 의 예측 t 상위 비율
 
     # 모델
     max_len: int    = 4096                           # 정수 서열 잔기 상한

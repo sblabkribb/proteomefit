@@ -11,7 +11,7 @@ Generalization to unseen genera is evaluated with genus-level nested cross-valid
 > [!TIP]
 > **Try it online: [https://proteomefit.duckdns.org](https://proteomefit.duckdns.org)**
 >
-> Upload the genes of one bacterial strain (GenBank, CDS FASTA or complete-genome FASTA) and get, for every gene, an essentiality call and, for non-essential genes, the predicted knockout fitness (within-strain z-score) with its uncertainty, as a downloadable CSV. The service runs the final models from `results/esscls_ablation/nobio` (classification) and `results/fitpred_10` (regression). Uploaded files and results are not stored on the server.
+> Upload the genes of one bacterial strain (GenBank, CDS FASTA or complete-genome FASTA) and get, for every gene, an essentiality call and, for non-essential genes, the predicted knockout fitness (within-strain z-score) with its uncertainty, as a downloadable CSV. The service runs the final models from `results/esscls_ablation/nobio` (classification) and `results/fitpred_ablation/noseq` (regression). Uploaded files and results are not stored on the server.
 
 ## Main results
 
@@ -25,31 +25,31 @@ Values are the mean ± standard deviation across genera of the per-genus perform
 | `esscls_30` | 0.3 | 0.712 ± 0.078 | 0.936 ± 0.040 | 0.811 ± 0.074 |
 | `esscls_50` | 0.5 | 0.708 ± 0.076 | 0.938 ± 0.040 | 0.820 ± 0.073 |
 
-**Fitness regression** — 28 genera. `_pt` = test-genus samples in the top 10% of predicted t (predicted mean / between-branch standard deviation); `_all` = all samples
+**Fitness regression** — 28 genera. `_sig` = test-genus genes with |comb_t| ≥ 2, whose measured fitness is distinguishable from 0 (main metric; the same genes for every model); `_all` = all test genes
 
-| Result folder | Dropout | Spearman_pt | CCC_pt | Spearman_all |
+| Result folder | Dropout | Spearman_sig | CCC_sig | Spearman_all |
 |---|---|---|---|---|
-| `fitpred_10` | 0.1 | 0.315 ± 0.107 | 0.292 ± 0.107 | 0.118 ± 0.056 |
-| `fitpred_30` | 0.3 | 0.314 ± 0.096 | 0.315 ± 0.105 | 0.118 ± 0.055 |
-| `fitpred_50` | 0.5 | 0.306 ± 0.099 | 0.314 ± 0.105 | 0.116 ± 0.053 |
+| `fitpred_10` | 0.1 | 0.381 ± 0.130 | 0.328 ± 0.118 | 0.118 ± 0.056 |
+| `fitpred_30` | 0.3 | 0.380 ± 0.129 | 0.322 ± 0.119 | 0.118 ± 0.055 |
+| `fitpred_50` | 0.5 | 0.375 ± 0.127 | 0.315 ± 0.116 | 0.116 ± 0.053 |
 
 **Input ablation** — difference in the genus-mean metric relative to the full-input model (classification `esscls_30`, regression `fitpred_10`)
 
-| Ablation | Inputs | ΔMCC (classification) | ΔSpearman_pt (regression) |
+| Ablation | Inputs | ΔMCC (classification) | ΔSpearman_sig (regression) |
 |---|---|---|---|
-| `noctx` | seq + esm + prot + bio | −0.025 | −0.087 |
+| `noctx` | seq + esm + prot + bio | −0.025 | −0.079 |
 | `nobio` | seq + esm + prot + ctx × 3 | +0.002 | −0.002 |
-| `noesm` | seq + prot + bio + ctx × 3 | −0.003 | −0.012 |
-| `noseq` | esm + prot + bio + ctx × 3 | −0.001 | −0.003 |
-| `noder` | seq + esm + prot | −0.028 | −0.100 |
-| `noemb` | seq + bio + ctx × 3 | −0.054 | −0.007 |
-| `seq-prot` | seq + prot | −0.049 | −0.136 |
-| `esm-prot` | esm + prot | −0.026 | −0.101 |
-| `prot` | prot | −0.046 | −0.124 |
-| `poolesm` | seq + esm_mean + prot + bio + ctx × 3 | −0.009 | −0.004 |
-| `poolesm-noseq` | esm_mean + prot + bio + ctx × 3 | −0.013 | −0.012 |
-| `poolesm-noder` | seq + esm_mean + prot | −0.039 | −0.118 |
-| `poolesm-prot` | esm_mean + prot | −0.035 | −0.122 |
+| `noesm` | seq + prot + bio + ctx × 3 | −0.003 | −0.004 |
+| `noseq` | esm + prot + bio + ctx × 3 | −0.001 | +0.002 |
+| `noder` | seq + esm + prot | −0.028 | −0.079 |
+| `noemb` | seq + bio + ctx × 3 | −0.054 | −0.009 |
+| `seq-prot` | seq + prot | −0.049 | −0.116 |
+| `esm-prot` | esm + prot | −0.026 | −0.071 |
+| `prot` | prot | −0.046 | −0.079 |
+| `poolesm` | seq + esm_mean + prot + bio + ctx × 3 | −0.009 | −0.003 |
+| `poolesm-noseq` | esm_mean + prot + bio + ctx × 3 | −0.013 | +0.001 |
+| `poolesm-noder` | seq + esm_mean + prot | −0.039 | −0.096 |
+| `poolesm-prot` | esm_mean + prot | −0.035 | −0.081 |
 
 seq = integer-encoded sequence, esm = ESM per-token embeddings, esm_mean = mean of ESM token embeddings, prot = ProteomeLM embedding, bio = Biopython features, ctx × 3 = the three context-feature blocks.
 Full tables: `results/esscls_ablation/ablation_summary.csv` · `results/fitpred_ablation/ablation_summary.csv`.
@@ -120,7 +120,7 @@ For strains not covered by the Fitness Browser file `essential_proteins.tab`, no
   - Classification: multi-layer perceptron (MLP) `2712 → 640 → 320 → 1`; loss = binary cross-entropy with positive-class weighting and inverse taxon-size sample weights
   - Regression: 1,000 mini-MLPs, each using randomly chosen input blocks and columns (with a per-branch bootstrap); loss = per-branch weighted 1 − concordance correlation coefficient (CCC). The mean of the branch predictions is the prediction and their standard deviation is the uncertainty
 - **Context features** — for each query gene, the most similar protein (ortholog candidate) is found in every strain, and only the labels from strains outside the test, validation and query's own genus are summarized over the top k hits. Labels of the test genus therefore never enter any input of that fold
-- **Evaluation** — outer folds = leave-one-genus-out (28), inner folds = 3 validation genera whose extrapolation distance is similar to that of the test genus. Metrics are computed per strain and averaged
+- **Evaluation** — outer folds = leave-one-genus-out (28), inner folds = 3 validation genera whose extrapolation distance is similar to that of the test genus. Metrics are computed per strain and averaged. For regression, the main metric uses only genes with |comb_t| ≥ 2, because the measured fitness of the other genes is not distinguishable from 0
 
 See [`src/input_features.md`](src/input_features.md) for exact feature definitions.
 

@@ -313,7 +313,7 @@ Per-strain z-normalization (Section 2.2) uses label-free within-strain statistic
 | Column | Usage |
 |---|---|
 | `fit_mean` | Source of the labels (esscls: $-\infty$ → essential, fitpred: $> 0$ → high). The values of reference proteins are used in the context features |
-| `comb_t` | fitpred training-sample weight clip(\|comb_t\|) and the criterion for early-stopping validation samples (\|comb_t\| ≥ 2). The values of reference proteins are used in `otf_*strong*` |
+| `comb_t` | fitpred training-sample weight clip(\|comb_t\|) and the criterion (\|comb_t\| ≥ 2) for early-stopping validation samples and for the samples of the main test metric (`_sig`). The values of reference proteins are used in `otf_*strong*` |
 | `org_id` · `genus` | fold splitting · sample weights · per-strain metrics |
 | `ORG_VEC` | strain proteome representation for validation genus selection |
 
