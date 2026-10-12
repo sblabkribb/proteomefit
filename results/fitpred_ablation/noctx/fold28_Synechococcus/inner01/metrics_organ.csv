@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pt,spearman_pt,pearson_pt,ccc_pt,mcc_pt,f1_pt,recall_pt,precision_pt,accuracy_pt,roc_auc_pt,pr_auc_pt,tp_pt,tn_pt,fp_pt,fn_pt,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
+28,Synechococcus,1,SynE,1898,190,0.268727,0.320994,0.296004,0.289276,0.840678,0.826667,0.855172,0.752632,0.706,0.886817,124,19,21,26,0.150544,0.18512,0.146283,0.14164,0.816911,0.871449,0.768797,0.710221,0.623048,0.816994,1227,121,369,181

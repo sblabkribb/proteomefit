@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pt,spearman_pt,pearson_pt,ccc_pt,mcc_pt,f1_pt,recall_pt,precision_pt,accuracy_pt,roc_auc_pt,pr_auc_pt,tp_pt,tn_pt,fp_pt,fn_pt,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
+5,Cupriavidus,1,Cup4G11,6373,638,0.258923,0.300317,0.275328,0.191,0.606707,0.595808,0.618012,0.595611,0.634494,0.649083,199,181,123,135,0.065308,0.178646,0.173195,0.055581,0.656371,0.761905,0.576515,0.553115,0.528216,0.583616,2720,805,1998,850

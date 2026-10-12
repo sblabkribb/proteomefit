@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pt,spearman_pt,pearson_pt,ccc_pt,mcc_pt,f1_pt,recall_pt,precision_pt,accuracy_pt,roc_auc_pt,pr_auc_pt,tp_pt,tn_pt,fp_pt,fn_pt,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
+17,Marinobacter,1,Marino,3648,365,0.352464,0.333157,0.291462,0.302388,0.555957,0.484277,0.652542,0.663014,0.654546,0.559256,77,165,41,82,0.13487,0.314524,0.314443,0.115601,0.678579,0.751295,0.618697,0.5858,0.566632,0.619168,1595,542,983,528

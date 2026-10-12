@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pt,spearman_pt,pearson_pt,ccc_pt,mcc_pt,f1_pt,recall_pt,precision_pt,accuracy_pt,roc_auc_pt,pr_auc_pt,tp_pt,tn_pt,fp_pt,fn_pt,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
+27,Kangiella,1,Kang,1989,199,0.144963,0.074342,0.028616,0.133147,0.135922,0.074468,0.777778,0.552764,0.623506,0.607974,7,103,2,87,0.135534,0.216851,0.179523,0.193524,0.674765,0.555842,0.858425,0.582705,0.688893,0.861965,861,298,142,688

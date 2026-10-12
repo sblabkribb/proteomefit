@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pt,spearman_pt,pearson_pt,ccc_pt,mcc_pt,f1_pt,recall_pt,precision_pt,accuracy_pt,roc_auc_pt,pr_auc_pt,tp_pt,tn_pt,fp_pt,fn_pt,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
+15,Acidovorax,1,acidovorax_3H11,3924,393,0.408014,0.457051,0.423009,0.373256,0.685279,0.725806,0.649038,0.684478,0.682822,0.612349,135,134,73,51,0.142473,0.323299,0.319306,0.132834,0.716274,0.815723,0.638439,0.610347,0.572187,0.637895,1930,465,1093,436

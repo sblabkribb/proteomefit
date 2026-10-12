@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pt,spearman_pt,pearson_pt,ccc_pt,mcc_pt,f1_pt,recall_pt,precision_pt,accuracy_pt,roc_auc_pt,pr_auc_pt,tp_pt,tn_pt,fp_pt,fn_pt,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
+22,Caulobacter,3,Caulo,3305,331,0.109173,0.159185,0.09102,-0.099834,0.238683,0.164773,0.432836,0.441088,0.538783,0.524954,29,117,38,147,-0.047562,0.131369,0.12904,-0.050364,0.605225,0.635348,0.577829,0.506203,0.46539,0.5692,1251,422,914,718

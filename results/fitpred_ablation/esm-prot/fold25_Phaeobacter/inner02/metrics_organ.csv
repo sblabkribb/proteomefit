@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pt,spearman_pt,pearson_pt,ccc_pt,mcc_pt,f1_pt,recall_pt,precision_pt,accuracy_pt,roc_auc_pt,pr_auc_pt,tp_pt,tn_pt,fp_pt,fn_pt,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
+25,Phaeobacter,2,Phaeo,3094,310,0.257574,0.249573,0.140457,0.21062,0.13986,0.075188,1.0,0.603226,0.635105,0.579687,10,177,0,123,0.21181,0.28109,0.273975,0.196722,0.684652,0.621789,0.761655,0.61086,0.637072,0.757773,1307,583,409,795

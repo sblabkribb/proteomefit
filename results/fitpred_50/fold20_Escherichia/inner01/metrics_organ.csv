@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pt,spearman_pt,pearson_pt,ccc_pt,mcc_pt,f1_pt,recall_pt,precision_pt,accuracy_pt,roc_auc_pt,pr_auc_pt,tp_pt,tn_pt,fp_pt,fn_pt,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
+20,Escherichia,1,Keio,3585,359,0.41959,0.406827,0.19192,0.247489,0.265896,0.158621,0.821429,0.64624,0.706735,0.613847,23,209,5,122,0.121827,0.321822,0.288747,0.089644,0.625947,0.623879,0.628029,0.559275,0.561546,0.624481,1322,683,783,797

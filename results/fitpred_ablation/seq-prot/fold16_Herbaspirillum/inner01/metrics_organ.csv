@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pt,spearman_pt,pearson_pt,ccc_pt,mcc_pt,f1_pt,recall_pt,precision_pt,accuracy_pt,roc_auc_pt,pr_auc_pt,tp_pt,tn_pt,fp_pt,fn_pt,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
+16,Herbaspirillum,1,HerbieS,3878,388,0.342631,0.441431,0.38881,0.385588,0.745614,0.772727,0.720339,0.701031,0.702787,0.718715,170,102,66,50,0.15398,0.246988,0.246982,0.131663,0.664007,0.687093,0.642422,0.587416,0.590015,0.652307,1581,697,880,720

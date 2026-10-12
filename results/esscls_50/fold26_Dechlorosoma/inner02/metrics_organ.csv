@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc
+26,Dechlorosoma,2,PS,3035,485,396,2454,96,89,0.774351,0.810645,0.816495,0.804878,0.939044,0.949041,0.876565

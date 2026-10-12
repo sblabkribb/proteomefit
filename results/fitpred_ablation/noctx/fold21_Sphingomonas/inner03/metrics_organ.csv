@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pt,spearman_pt,pearson_pt,ccc_pt,mcc_pt,f1_pt,recall_pt,precision_pt,accuracy_pt,roc_auc_pt,pr_auc_pt,tp_pt,tn_pt,fp_pt,fn_pt,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
+21,Sphingomonas,3,Korea,3360,336,0.248951,0.26834,0.19899,0.277911,0.48249,0.350282,0.775,0.604167,0.638205,0.682245,62,141,18,115,0.145644,0.210617,0.209605,0.149091,0.681517,0.648332,0.718282,0.6,0.601363,0.719393,1438,578,564,780

@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pt,spearman_pt,pearson_pt,ccc_pt,mcc_pt,f1_pt,recall_pt,precision_pt,accuracy_pt,roc_auc_pt,pr_auc_pt,tp_pt,tn_pt,fp_pt,fn_pt,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
+26,Dechlorosoma,1,PS,2550,255,0.163751,0.237291,0.18945,0.087569,0.397849,0.321739,0.521127,0.560784,0.565528,0.482623,37,106,34,78,0.037089,0.140997,0.137792,0.009768,0.5797,0.571141,0.58852,0.516078,0.526183,0.596496,851,465,595,639

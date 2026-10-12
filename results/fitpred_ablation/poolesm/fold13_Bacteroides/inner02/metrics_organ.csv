@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pt,spearman_pt,pearson_pt,ccc_pt,mcc_pt,f1_pt,recall_pt,precision_pt,accuracy_pt,roc_auc_pt,pr_auc_pt,tp_pt,tn_pt,fp_pt,fn_pt,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
+13,Bacteroides,2,Btheta,4054,406,0.224971,0.267706,0.220536,0.337213,0.469453,0.317391,0.901235,0.593596,0.657139,0.72469,73,168,8,157,0.126819,0.309395,0.305246,0.200116,0.73343,0.666887,0.814725,0.638875,0.641239,0.811539,2014,576,458,1006

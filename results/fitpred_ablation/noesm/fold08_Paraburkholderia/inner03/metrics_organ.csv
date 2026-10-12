@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pt,spearman_pt,pearson_pt,ccc_pt,mcc_pt,f1_pt,recall_pt,precision_pt,accuracy_pt,roc_auc_pt,pr_auc_pt,tp_pt,tn_pt,fp_pt,fn_pt,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
+8,Paraburkholderia,3,Burk376,5147,515,0.388382,0.378815,0.366462,0.303151,0.626556,0.587549,0.671111,0.650485,0.685036,0.642068,151,184,74,106,0.118087,0.376572,0.374522,0.118656,0.737248,0.780047,0.698902,0.629687,0.571139,0.701636,2674,567,1152,754

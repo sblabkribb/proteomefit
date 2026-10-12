@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pt,spearman_pt,pearson_pt,ccc_pt,mcc_pt,f1_pt,recall_pt,precision_pt,accuracy_pt,roc_auc_pt,pr_auc_pt,tp_pt,tn_pt,fp_pt,fn_pt,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
+12,Azospirillum,3,azobra,4178,418,0.216608,0.277288,0.235382,0.19249,0.492582,0.400966,0.638462,0.590909,0.59647,0.589921,83,164,47,124,0.057393,0.200546,0.166526,0.026117,0.619718,0.658628,0.58515,0.534706,0.527098,0.593251,1584,650,1123,821

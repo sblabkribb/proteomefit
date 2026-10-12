@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pt,spearman_pt,pearson_pt,ccc_pt,mcc_pt,f1_pt,recall_pt,precision_pt,accuracy_pt,roc_auc_pt,pr_auc_pt,tp_pt,tn_pt,fp_pt,fn_pt,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
+18,Pontibacter,1,Ponti,3643,365,0.268739,0.165498,0.119938,0.364368,0.423729,0.273224,0.943396,0.627397,0.655768,0.683656,50,179,3,133,0.194369,0.260995,0.256819,0.193942,0.709327,0.627916,0.814993,0.618446,0.649579,0.813097,1696,557,385,1005

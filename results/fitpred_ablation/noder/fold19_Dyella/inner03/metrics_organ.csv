@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pt,spearman_pt,pearson_pt,ccc_pt,mcc_pt,f1_pt,recall_pt,precision_pt,accuracy_pt,roc_auc_pt,pr_auc_pt,tp_pt,tn_pt,fp_pt,fn_pt,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
+19,Dyella,3,Dyella79,3611,362,0.328439,0.483762,0.483048,0.326332,0.724299,0.738095,0.711009,0.674033,0.658678,0.679523,155,89,63,55,0.160775,0.326048,0.313975,0.126557,0.718546,0.728364,0.708988,0.618388,0.587382,0.71635,1759,474,722,656

@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc
+14,Bacteroides,1,Btheta,4432,378,341,3685,369,37,0.61765,0.626838,0.902116,0.480282,0.908394,0.960187,0.824325

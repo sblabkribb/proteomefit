@@ -1,0 +1,3 @@
+fold,genus,inner,org_id,n,n_pt,spearman_pt,pearson_pt,ccc_pt,mcc_pt,f1_pt,recall_pt,precision_pt,accuracy_pt,roc_auc_pt,pr_auc_pt,tp_pt,tn_pt,fp_pt,fn_pt,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
+7,Desulfovibrio,2,DvH,2725,262,0.321389,0.288688,0.26747,0.243625,0.690323,0.713333,0.66875,0.633588,0.644167,0.688514,107,59,53,43,0.105934,0.187796,0.185765,0.115035,0.710847,0.769321,0.660633,0.607706,0.557664,0.658826,1314,342,675,394
+7,Desulfovibrio,2,Miya,2511,262,0.332735,0.377001,0.302966,0.355847,0.757576,0.710227,0.811688,0.694656,0.713663,0.799112,125,57,29,51,0.126206,0.240079,0.239272,0.1112,0.726594,0.751188,0.70356,0.620868,0.579659,0.724544,1265,294,533,419

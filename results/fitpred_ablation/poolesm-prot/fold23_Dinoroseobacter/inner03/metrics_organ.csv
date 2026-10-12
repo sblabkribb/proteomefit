@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pt,spearman_pt,pearson_pt,ccc_pt,mcc_pt,f1_pt,recall_pt,precision_pt,accuracy_pt,roc_auc_pt,pr_auc_pt,tp_pt,tn_pt,fp_pt,fn_pt,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
+23,Dinoroseobacter,3,Dino,3185,319,0.104706,0.14459,0.112302,0.135918,0.31,0.205298,0.632653,0.567398,0.54419,0.545852,31,150,18,120,0.084156,0.18152,0.179125,0.078131,0.62023,0.610294,0.630494,0.553218,0.551829,0.628774,1162,600,681,742

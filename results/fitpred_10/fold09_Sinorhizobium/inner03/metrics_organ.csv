@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pt,spearman_pt,pearson_pt,ccc_pt,mcc_pt,f1_pt,recall_pt,precision_pt,accuracy_pt,roc_auc_pt,pr_auc_pt,tp_pt,tn_pt,fp_pt,fn_pt,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
+9,Sinorhizobium,3,Smeli,5130,513,0.14019,0.271008,0.241095,0.164895,0.59203,0.561151,0.626506,0.580897,0.578907,0.583875,156,142,93,122,0.020481,0.194869,0.194775,0.035039,0.651016,0.735965,0.583648,0.547953,0.515228,0.576812,2163,648,1543,776

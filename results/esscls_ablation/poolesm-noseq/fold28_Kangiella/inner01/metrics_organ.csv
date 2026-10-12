@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc
+28,Kangiella,1,Kang,2388,399,347,1828,161,52,0.718987,0.76516,0.869674,0.683071,0.910804,0.948436,0.856075

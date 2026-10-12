@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pt,spearman_pt,pearson_pt,ccc_pt,mcc_pt,f1_pt,recall_pt,precision_pt,accuracy_pt,roc_auc_pt,pr_auc_pt,tp_pt,tn_pt,fp_pt,fn_pt,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
+10,Klebsiella,1,Koxy,4485,449,0.361209,0.339516,0.296478,0.217126,0.522472,0.47449,0.58125,0.621381,0.636827,0.532901,93,186,67,103,0.103481,0.293871,0.292634,0.08564,0.670449,0.750577,0.605778,0.572575,0.547667,0.6012,1950,618,1269,648

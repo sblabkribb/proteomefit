@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pt,spearman_pt,pearson_pt,ccc_pt,mcc_pt,f1_pt,recall_pt,precision_pt,accuracy_pt,roc_auc_pt,pr_auc_pt,tp_pt,tn_pt,fp_pt,fn_pt,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
+14,Echinicola,1,Cola,3950,395,0.321992,0.292694,0.210604,0.200593,0.285714,0.176796,0.744186,0.594937,0.666933,0.611836,32,203,11,149,0.059838,0.302753,0.300044,0.072991,0.656068,0.655672,0.656464,0.567342,0.542324,0.639174,1630,611,853,856

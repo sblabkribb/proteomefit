@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc
+21,Sphingomonas,2,Korea,3803,443,368,3096,264,75,0.648197,0.684651,0.8307,0.582278,0.91086,0.950258,0.834359

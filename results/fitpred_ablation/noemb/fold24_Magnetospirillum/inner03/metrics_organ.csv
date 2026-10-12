@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pt,spearman_pt,pearson_pt,ccc_pt,mcc_pt,f1_pt,recall_pt,precision_pt,accuracy_pt,roc_auc_pt,pr_auc_pt,tp_pt,tn_pt,fp_pt,fn_pt,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
+24,Magnetospirillum,3,Magneto,3155,316,0.15549,0.213673,0.205152,0.100386,0.50519,0.453416,0.570312,0.547468,0.570307,0.544963,73,100,55,88,0.053146,0.133425,0.114953,0.068327,0.635355,0.696661,0.583966,0.552139,0.527268,0.570591,1231,511,877,536
