@@ -57,7 +57,7 @@ Full tables: `results/esscls_ablation/ablation_summary.csv` · `results/fitpred_
 ## Repository layout
 
 ```
-experiments/
+proteomefit/
 ├── README.md
 ├── data/
 │   ├── basedata/                 # 46 per-strain base data TSVs (01_acidovorax_3H11.tsv … 46_WCS417.tsv)
