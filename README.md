@@ -88,7 +88,7 @@ proteomefit/
 | 2 | `02-embed_proteome` | `data/emb_esm_600m.h5` (per token) · `data/emb_esm_600m_mean.h5` (token mean) · `data/emb_proteome_328m.h5` (ProteomeLM `hidden_states[8]`) |
 | 3 | `03-train_esscls` · `03-train_fitpred` | `results/<task>_<dropout>/` — per-fold models · metrics · figures, `metrics_total.csv`, final model |
 | 4 | `04-ablation_*` | `results/<task>_ablation/<ablation>/` · `ablation_summary.csv` |
-| 5 | `05-calib_logistic` | `results/calib_logistic/calibration.json` — logistic calibrations of the regression mean · SD into `conf_sign` (probability that the true fitness lies on the predicted side of the strain average) and `conf_fit` (probability that it lies within ±0.5), fitted on held-out-genus predictions |
+| 5 | `05-calib_logistic` | `results/calib_logistic/calibration.json` — calibrations of the regression mean · SD into `conf_sign` (probability that the true fitness lies on the predicted side of the strain average; label-noise-aware logistic) and `conf_fit` (probability that the measured fitness lies within mean ± SD; gradient-boosting probability table), fitted on held-out-genus predictions |
 
 ### Base data (`data/basedata/`)
 
