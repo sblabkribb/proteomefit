@@ -1,2 +1,0 @@
-fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc
-20,Escherichia,1,Keio,3909,324,265,3430,155,59,0.689694,0.712366,0.817901,0.630952,0.945255,0.929536,0.783002

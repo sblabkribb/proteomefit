@@ -11,19 +11,19 @@ Generalization to unseen genera is evaluated with genus-level nested cross-valid
 > [!TIP]
 > **Try it online: [https://proteomefit.duckdns.org](https://proteomefit.duckdns.org)**
 >
-> Upload the genes of one bacterial strain (GenBank, CDS FASTA or complete-genome FASTA) and get, for every gene, an essentiality call and, for non-essential genes, the predicted knockout fitness (within-strain z-score) with its uncertainty, as a downloadable CSV. The service runs the final models from `results/esscls_ablation/nobio` (classification) and `results/fitpred_ablation/noseq` (regression). Uploaded files and results are not stored on the server.
+> Upload the genes of one bacterial strain (GenBank, CDS FASTA or complete-genome FASTA) and get, for every gene, an essentiality call and, for non-essential genes, the predicted knockout fitness (within-strain z-score) with its uncertainty, as a downloadable CSV. The service runs the final models of the `nobio` classification ablation and the `noseq` regression ablation (`results/fitpred_ablation/noseq`). Uploaded files and results are not stored on the server.
 
 ## Main results
 
-Values are the mean ± standard deviation across genera of the per-genus performance (each genus = mean of its 3 inner folds), taken from the `mean` and `std` rows of `results/*/metrics_total.csv`.
+Values are the mean ± standard deviation across genera of the per-genus performance (each genus = mean of its 3 inner folds), taken from the `mean` and `std` rows of `results/*/metrics_total.csv` (`metrics_total_calib.csv` for calibrated results).
 
-**Essential gene classification** — 26 genera (2 genera without essential genes are excluded)
+**Essential gene classification** — 26 genera (2 genera without essential genes are excluded). Call = calibrated `conf_ess` ≥ 0.5 (`metrics_total_calib.csv`); raw = model probability ≥ 0.5 (`metrics_total.csv`)
 
-| Result folder | Dropout | MCC | ROC AUC | PR AUC |
-|---|---|---|---|---|
-| `esscls_10` | 0.1 | 0.705 ± 0.077 | 0.932 ± 0.042 | 0.798 ± 0.075 |
-| `esscls_30` | 0.3 | 0.712 ± 0.078 | 0.936 ± 0.040 | 0.811 ± 0.074 |
-| `esscls_50` | 0.5 | 0.708 ± 0.076 | 0.938 ± 0.040 | 0.820 ± 0.073 |
+| Result folder | Dropout | MCC | MCC (raw) | Precision | Recall | ROC AUC | PR AUC | ECE |
+|---|---|---|---|---|---|---|---|---|
+| `esscls_10` | 0.1 | 0.704 ± 0.094 | 0.705 | 0.858 ± 0.040 | 0.632 ± 0.134 | 0.927 ± 0.044 | 0.788 ± 0.076 | 0.028 ± 0.027 |
+| `esscls_30` | 0.3 | 0.711 ± 0.092 | 0.712 | 0.868 ± 0.040 | 0.636 ± 0.134 | 0.935 ± 0.040 | 0.805 ± 0.074 | 0.027 ± 0.030 |
+| `esscls_50` | 0.5 | 0.723 ± 0.088 | 0.708 | 0.872 ± 0.037 | 0.650 ± 0.125 | 0.938 ± 0.040 | 0.818 ± 0.074 | 0.025 ± 0.029 |
 
 **Fitness regression** — 28 genera. `_sig` = test-genus genes with |comb_t| ≥ 2 (main metric); `_all` = all test genes
 
@@ -33,36 +33,33 @@ Values are the mean ± standard deviation across genera of the per-genus perform
 | `fitpred_30` | 0.3 | 0.380 ± 0.129 | 0.322 ± 0.119 | 0.118 ± 0.055 |
 | `fitpred_50` | 0.5 | 0.375 ± 0.127 | 0.315 ± 0.116 | 0.116 ± 0.053 |
 
-**Confidence calibration** — 28 genera, mean over genera of the per-genus value (`results/calib_conf/compare.csv`). Before = model output as is (`conf_ess`) or the SD read as a normal standard deviation ($\Phi(\lvert\mu\rvert/\sigma)$ for `conf_sign`, 0.683 for `conf_fit`)
+**Fitness confidence** — 28 genera, notebook 05 (`results/conf_fitpred/conf_*/compare_calib.csv`). Before = the SD read as a normal standard deviation ($\Phi(\lvert\mu\rvert/\sigma)$ for `conf_sign`, 0.683 for `conf_fit`)
 
 | Confidence | ECE (before → after) | Log loss (before → after) | ROC AUC (before → after) |
 |---|---|---|---|
-| `conf_ess` | 0.044 → 0.024 | 0.223 → 0.168 | 0.934 → 0.934 |
 | `conf_sign` | 0.190 → 0.061 | 0.919 → 0.650 | 0.554 → 0.622 |
 | `conf_fit` | 0.140 → 0.067 | 0.726 → 0.610 | 0.500 → 0.706 |
 
-Essential call with calibrated `conf_ess` ≥ 0.5 (raw probability ≥ 0.5 → calibrated): MCC 0.714 → 0.713, precision 0.752 → 0.861, recall 0.747 → 0.645
+**Input ablation** — difference in the genus-mean Spearman_sig relative to the full-input regression model `fitpred_10`
 
-**Input ablation** — difference in the genus-mean metric relative to the full-input model (classification `esscls_30`, regression `fitpred_10`)
-
-| Ablation | Inputs | ΔMCC (classification) | ΔSpearman_sig (regression) |
-|---|---|---|---|
-| `noctx` | seq + esm + prot + bio | −0.025 | −0.079 |
-| `nobio` | seq + esm + prot + ctx × 3 | +0.002 | −0.002 |
-| `noesm` | seq + prot + bio + ctx × 3 | −0.003 | −0.004 |
-| `noseq` | esm + prot + bio + ctx × 3 | −0.001 | +0.002 |
-| `noder` | seq + esm + prot | −0.028 | −0.079 |
-| `noemb` | seq + bio + ctx × 3 | −0.054 | −0.009 |
-| `seq-prot` | seq + prot | −0.049 | −0.116 |
-| `esm-prot` | esm + prot | −0.026 | −0.071 |
-| `prot` | prot | −0.046 | −0.079 |
-| `poolesm` | seq + esm_mean + prot + bio + ctx × 3 | −0.009 | −0.003 |
-| `poolesm-noseq` | esm_mean + prot + bio + ctx × 3 | −0.013 | +0.001 |
-| `poolesm-noder` | seq + esm_mean + prot | −0.039 | −0.096 |
-| `poolesm-prot` | esm_mean + prot | −0.035 | −0.081 |
+| Ablation | Inputs | ΔSpearman_sig (regression) |
+|---|---|---|
+| `noctx` | seq + esm + prot + bio | −0.079 |
+| `nobio` | seq + esm + prot + ctx × 3 | −0.002 |
+| `noesm` | seq + prot + bio + ctx × 3 | −0.004 |
+| `noseq` | esm + prot + bio + ctx × 3 | +0.002 |
+| `noder` | seq + esm + prot | −0.079 |
+| `noemb` | seq + bio + ctx × 3 | −0.009 |
+| `seq-prot` | seq + prot | −0.116 |
+| `esm-prot` | esm + prot | −0.071 |
+| `prot` | prot | −0.079 |
+| `poolesm` | seq + esm_mean + prot + bio + ctx × 3 | −0.003 |
+| `poolesm-noseq` | esm_mean + prot + bio + ctx × 3 | +0.001 |
+| `poolesm-noder` | seq + esm_mean + prot | −0.096 |
+| `poolesm-prot` | esm_mean + prot | −0.081 |
 
 seq = integer-encoded sequence, esm = ESM per-token embeddings, esm_mean = mean of ESM token embeddings, prot = ProteomeLM embedding, bio = Biopython features, ctx × 3 = the three context-feature blocks.
-Full tables: `results/esscls_ablation/ablation_summary.csv` · `results/fitpred_ablation/ablation_summary.csv`.
+Full table: `results/fitpred_ablation/ablation_summary.csv`.
 
 ## Repository layout
 
@@ -77,15 +74,15 @@ proteomefit/
 │   ├── fitpred_{10,30,50}/       # fitness regression
 │   ├── esscls_ablation/          # 13 classification ablations
 │   ├── fitpred_ablation/         # 13 regression ablations
-│   └── calib_conf/               # prediction-confidence calibration (conf_ess · conf_sign · conf_fit)
+│   └── conf_fitpred/             # fitness-prediction confidences (conf_sign · conf_fit)
 └── src/
     ├── 01-build_basedata.ipynb   # Fitness Browser -> per-strain base data TSVs
     ├── 02-embed_proteome.ipynb   # ESM C 600M · ProteomeLM-L embedding h5 files
-    ├── 03-train_esscls.ipynb     # essential gene classification (nested CV + final model)
+    ├── 03-train_esscls.ipynb     # essential gene classification (nested CV + final model + conf_ess calibration)
     ├── 03-train_fitpred.ipynb    # fitness regression
     ├── 04-ablation_esscls.ipynb  # classification input ablation
     ├── 04-ablation_fitpred.ipynb # regression input ablation
-    ├── 05-calib_conf.ipynb       # calibration of prediction confidences
+    ├── 05-conf_fitpred.ipynb     # fitness-prediction confidences
     ├── input_features.md         # input feature specification (definitions · formulas · preprocessing)
     └── proteomefit/              # shared modules imported by the notebooks
 ```
@@ -96,9 +93,9 @@ proteomefit/
 |---|---|---|
 | 1 | `01-build_basedata` | `data/basedata/<index>_<org_id>.tsv` — per strain: coding genes · sequences · summary fitness values in no-stress conditions · combined statistics · essentiality |
 | 2 | `02-embed_proteome` | `data/emb_esm_600m.h5` (per token) · `data/emb_esm_600m_mean.h5` (token mean) · `data/emb_proteome_328m.h5` (ProteomeLM `hidden_states[8]`) |
-| 3 | `03-train_esscls` · `03-train_fitpred` | `results/<task>_<dropout>/` — per-fold models · metrics · figures, `metrics_total.csv`, final model |
-| 4 | `04-ablation_*` | `results/<task>_ablation/<ablation>/` · `ablation_summary.csv` |
-| 5 | `05-calib_conf` | `results/calib_conf/` — `calibration.json` (probability tables for `conf_ess` · `conf_sign` · `conf_fit`), per-fold and final models, `conf_*/metrics_total.csv`, `compare.csv` |
+| 3 | `03-train_esscls` · `03-train_fitpred` | `results/<task>_<dropout>/` — per-fold models · metrics · figures, `metrics_total.csv`, final model; classification also `*_calib` files (`conf_ess` calibration: per-fold and final calibration models, `metrics_total_calib.csv`, `compare_calib.csv`, `calibration.json`) |
+| 4 | `04-ablation_*` | `results/<task>_ablation/<ablation>/` · `ablation_summary.csv` (classification also `ablation_summary_calib.csv`) |
+| 5 | `05-conf_fitpred` | `results/conf_fitpred/` — `calibration.json` (probability tables for `conf_sign` · `conf_fit`), `conf_*/` per-fold and final models · `metrics_total_calib.csv` · `compare_calib.csv` |
 
 ### Base data (`data/basedata/`)
 

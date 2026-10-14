@@ -8,10 +8,10 @@ import numpy as np, pandas as pd, torch, torch.nn as nn
 from .batching import predict
 from .data import ess_labels, fit_labels
 from .folds import both_classes
-from .metrics import (org_masks, mcc_org_mean, ess_metrics_by_organism, in_total, ESS_METRIC_COLS,
+from .metrics import (org_masks, mcc_org_mean, ess_metrics_by_organism, in_total, org_summary, ESS_METRIC_COLS,
                       ccc, sp_org_mean, fit_metrics_by_organism, FIT_METRIC_COLS, SIG_SUF)
 from .models import EssNet, FitNet
-from .plots import ess_plot_title, prob_confusion_plot, scatter_plot, sign_confusion_plot
+from .plots import scatter_plot, sign_confusion_plot
 from .train import taxon_weight, ccc_loss, bootstrap_counts
 
 
@@ -20,7 +20,7 @@ class EssTask:
        D: data.load_samples(finite_only=False) 결과 (D.block_dim 은 모델 생성 전에 채운다), cfg: config.Config"""
     score, target = 'mcc', 'mcc'                                     # 조기 종료 지표 이름 · 결과 정렬 기준 열
     classes   = ('non-essential', 'essential')                       # 라벨 0 / 1
-    artifacts = ('model.pt', 'history.csv', 'history.png', 'metrics_organ.csv', 'confusion.png', 'pred.npz')
+    artifacts = ('model.pt', 'history.csv', 'history.png', 'metrics_organ.csv', 'pred.npz')
     loss_label, score_label = 'weighted BCE loss', 'MCC (per-organism mean)'
     sd_cols      = ['val_mcc'] + ESS_METRIC_COLS                     # genus 표에 평균 · _sd 를 남길 열
     summary_cols = ['val_mcc', 'mcc', 'recall', 'precision', 'roc_auc', 'pr_auc']   # 요약 표 열
@@ -90,11 +90,10 @@ class EssTask:
 
     # ---- 평가 · 결과 표 (cv.run_cv 가 호출)
     def evaluate(self, raw, te, P, title):
-        """테스트 로짓 [n_test] -> (균주별 지표 DataFrame, 추가 값 dict). confusion.png · pred.npz 저장"""
+        """테스트 로짓 [n_test] -> (균주별 지표 DataFrame, 추가 값 dict). pred.npz 저장 (혼동행렬은 calib.nested_cv)"""
         pb = torch.sigmoid(raw).cpu().numpy()                       # 양성 확률 [n_test]
         yt, th = self.y[te], self.cfg.thresh
         om = ess_metrics_by_organism(self.D.org[te], yt, pb, th)
-        prob_confusion_plot(yt, pb, P['confusion.png'], ess_plot_title(title, len(te), om[in_total(om)]), self.classes, th)
         np.savez(P['pred.npz'], prob=pb)                            # [n_test] - 테스트 genus 샘플 순
         return om, {}
 
@@ -104,7 +103,7 @@ class EssTask:
     def fold_row(self, om, extra):
         """균주별 지표 -> (지표가 계산된 균주 수, 균주 평균 · 표준편차 dict) - 양·음성이 모두 있는 균주만"""
         tot = om[in_total(om)]
-        return len(tot), {**{c: tot[c].mean() for c in ESS_METRIC_COLS}, **{c + '_sd': tot[c].std() for c in ESS_METRIC_COLS}}
+        return len(tot), org_summary(tot, ESS_METRIC_COLS)
 
     def genus_extra(self, te):
         return {'n_pos': int(self.y[te].sum())}
@@ -222,7 +221,7 @@ class FitTask:
 
     def fold_row(self, om, extra):
         """균주별 지표 -> (주 지표가 계산된 균주 수, 균주 평균 · 표준편차 dict, n_sig 은 균주 합)"""
-        rest = {**{c: om[c].mean() for c in FIT_METRIC_COLS}, **{c + '_sd': om[c].std() for c in FIT_METRIC_COLS}}
+        rest = org_summary(om, FIT_METRIC_COLS)
         rest['n' + SIG_SUF] = int(om['n' + SIG_SUF].sum())
         return int(om[self.target].notna().sum()), rest
 

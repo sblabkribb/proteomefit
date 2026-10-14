@@ -1,2 +1,0 @@
-org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after
-SynE,1898,1367,0.095772,0.20663,0.662331,0.600682,0.114089,0.199426,0.589583,0.642875

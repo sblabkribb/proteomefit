@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,ece,brier,log_loss,roc_auc
+28,Synechococcus,2,SynE,1898,1287,0.106467,0.199028,0.588253,0.689041

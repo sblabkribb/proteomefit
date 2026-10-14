@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc,ece,brier,log_loss
+16,Herbaspirillum,1,HerbieS,4350,472,330,3822,56,142,0.748898,0.769231,0.699153,0.854922,0.954483,0.940089,0.812655,0.006776,0.037529,0.145978

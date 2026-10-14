@@ -1,2 +1,0 @@
-org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after
-Phaeo,3094,1940,0.113,0.248052,0.751376,0.576787,0.075297,0.212478,0.616192,0.692123

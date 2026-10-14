@@ -1,2 +1,0 @@
-org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after
-Burk376,5147,3209,0.171086,0.269676,0.871422,0.558986,0.049212,0.219065,0.629763,0.640418

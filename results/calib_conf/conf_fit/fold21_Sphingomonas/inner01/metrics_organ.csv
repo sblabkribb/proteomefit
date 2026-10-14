@@ -1,2 +1,0 @@
-org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after
-Korea,3360,2111,0.054726,0.236541,0.666595,0.5,0.068032,0.214542,0.618945,0.673836

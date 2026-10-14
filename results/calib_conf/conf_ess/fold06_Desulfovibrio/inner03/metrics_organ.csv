@@ -1,3 +1,0 @@
-org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,mcc_before,f1_before,recall_before,precision_before,accuracy_before,pr_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after,mcc_after,f1_after,recall_after,precision_after,accuracy_after,pr_auc_after
-DvH,3124,399,0.067744,0.073041,0.478463,0.879435,0.59003,0.591736,0.448622,0.868932,0.920935,0.695993,0.063416,0.073756,0.295545,0.874946,0.557094,0.533808,0.37594,0.920245,0.916133,0.689524
-Miya,2823,312,0.065987,0.071133,0.451593,0.868046,0.52536,0.521739,0.384615,0.810811,0.922069,0.623159,0.057948,0.070882,0.282548,0.86258,0.492844,0.461176,0.314103,0.867257,0.918881,0.616327

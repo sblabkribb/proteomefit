@@ -1,3 +1,0 @@
-org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after
-DvH,2725,1557,0.111624,0.257365,0.710269,0.5,0.01331,0.210255,0.609392,0.710329
-Miya,2511,1445,0.107532,0.255868,0.707128,0.5,0.063146,0.192008,0.569811,0.770397

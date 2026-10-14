@@ -52,6 +52,11 @@ def ess_metrics_by_organism(org_ids, y_true, prob, thresh):
     return pd.DataFrame(out).sort_values('org_id').reset_index(drop=True)
 
 
+def org_summary(om, cols):
+    """균주별 지표 DataFrame · 지표 열 -> 균주 평균 · 표준편차 dict ({열} ... , {열}_sd ...)"""
+    return {**{c: om[c].mean() for c in cols}, **{c + '_sd': om[c].std() for c in cols}}
+
+
 def in_total(om):
     """균주별 지표 DataFrame -> 총계에 넣을 균주 마스크 [n_org] (양·음성이 모두 있는 균주)"""
     return (om.n_pos > 0) & (om.n_pos < om.n)
@@ -120,7 +125,6 @@ def fit_metrics_by_organism(org_ids, y_true, mu, sel):
 # ---------------------------------------------------------------- 신뢰도 보정
 
 PROB_COLS = ['ece', 'brier', 'log_loss', 'roc_auc']                       # 확률 지표
-CALL_COLS = ['mcc', 'f1', 'recall', 'precision', 'accuracy', 'pr_auc']     # 확률 >= 0.5 판정 지표 (conf_ess)
 
 
 def ece(hit, p, bins):
@@ -135,20 +139,17 @@ def prob_metrics(hit, p, bins):
                 roc_auc=roc_auc_score(hit, p) if 0 < hit.sum() < len(hit) else np.nan)
 
 
-def calib_metrics_by_organism(org_ids, hit, probs, bins, call):
-    """균주 · 적중 [m] · {단계: 확률 [m]} -> 균주별 지표 DataFrame [n_org, 3 + 지표 수 x 단계 수] (org_id, n, n_pos, {지표}_{단계})
-       call = True 이면 확률 >= 0.5 판정 지표(CALL_COLS)도 구한다"""
+CAL_COLS = {'ess': ESS_METRIC_COLS + PROB_COLS[:3], 'sign': PROB_COLS, 'fit': PROB_COLS}   # 보정 신뢰도별 지표 열
+
+
+def calib_metrics_by_organism(org_ids, hit, prob, bins, cols):
+    """균주 · 적중 [m] · 확률 [m] · 지표 열 (CAL_COLS) -> 균주별 지표 DataFrame [n_org, 3 + len(cols)] (org_id, n, n_pos + cols)
+       ESS_METRIC_COLS = 확률 >= 0.5 판정 지표"""
     out = []
     for o in pd.unique(org_ids):
         m = org_ids == o
-        r = dict(org_id=o, n=int(m.sum()), n_pos=int(hit[m].sum()))
-        for stage, p in probs.items():
-            met = prob_metrics(hit[m], p[m], bins)
-            if call:
-                e = ess_metrics(hit[m], p[m], 0.5)
-                met.update({c: e[c] for c in CALL_COLS})
-            r.update({f'{c}_{stage}': v for c, v in met.items()})
-        out.append(r)
+        met = {**prob_metrics(hit[m], prob[m], bins), **(ess_metrics(hit[m], prob[m], 0.5) if 'mcc' in cols else {})}
+        out.append(dict(org_id=o, n=int(m.sum()), n_pos=int(hit[m].sum()), **{c: met[c] for c in cols}))
     return pd.DataFrame(out).sort_values('org_id').reset_index(drop=True)
 
 

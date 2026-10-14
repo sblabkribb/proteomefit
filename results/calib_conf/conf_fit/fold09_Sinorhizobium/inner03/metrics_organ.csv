@@ -1,2 +1,0 @@
-org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after
-Smeli,5130,2409,0.213409,0.294619,0.788399,0.5,0.057694,0.221387,0.631931,0.702512

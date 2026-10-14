@@ -19,40 +19,21 @@ def plot_history(hist, best_ep, path, score, loss_label, score_label):
     fig.savefig(path, dpi=140); plt.close(fig)
 
 
-def ess_plot_title(head, n, df):
-    """분류 그림 제목 두 줄 - df(균주별 지표) 지표 열의 평균"""
-    return (f'{head}  |  n={n:,}\n'
-            f'MCC {df.mcc.mean():.3f}  F1 {df.f1.mean():.3f}  recall {df.recall.mean():.3f}  '
-            f'precision {df.precision.mean():.3f}  ROC AUC {df.roc_auc.mean():.3f}  PR AUC {df.pr_auc.mean():.3f}')
-
-
-def prob_confusion_plot(y_true, prob, path, title, classes, thresh):
-    """분류 - 혼동행렬(왼쪽, 행 = 예측 · 열 = 실제, 실제 클래스 기준 정규화) · 실제 클래스별 예측 확률 분포(오른쪽)"""
-    C = confusion_matrix((prob >= thresh).astype(int), y_true, labels=[0, 1])   # [2, 2] 예측(행) x 실제(열)
-    R = C / np.maximum(C.sum(0, keepdims=True), 1)                              # 실제 클래스(열)별 비율 (대각 = 클래스별 재현율)
-    fig, axes = plt.subplots(1, 2, figsize=(11, 4.8))
-    ax = axes[0]
-    ax.imshow(R, cmap='Blues', vmin=0, vmax=1)
-    for i in range(2):
-        for j in range(2):
-            ax.text(j, i, f'{R[i, j]:.2f}\n{int(C[i, j]):,}', ha='center', va='center',
-                    fontsize=8, color='white' if R[i, j] > .5 else 'black')
-    ax.set_xticks(range(2), classes, fontsize=8); ax.set_yticks(range(2), classes, fontsize=8)
-    ax.set_xlabel('observed'); ax.set_ylabel('predicted')
-    ax.set_title('confusion (normalised by observed class)', fontsize=9)
-    ax = axes[1]
-    for c, nm in enumerate(classes):
-        m = y_true == c
-        if m.sum():
-            ax.hist(prob[m], bins=np.linspace(0, 1, 51), density=True, histtype='step', lw=1.3,
-                    label=f'{nm} (n={int(m.sum()):,})')
-    ax.axvline(thresh, ls='--', c='0.4', lw=1)
-    ax.set_xlabel(f'predicted P({classes[1]})'); ax.set_ylabel('density')
-    ax.set_xlim(0, 1); ax.grid(alpha=.25); ax.legend(fontsize=7, framealpha=.8)
-    ax.set_title('probability by observed class', fontsize=9)
+def confusion_plot(y_true, preds, path, title, classes):
+    """분류 - 라벨 [m] · {패널 제목: 0/1 예측 [m]} -> 혼동행렬 [1, 패널 수] (행 = 예측 · 열 = 실제, 실제 클래스 기준 정규화)"""
+    fig, axes = plt.subplots(1, len(preds), figsize=(5.2 * len(preds), 4.8), squeeze=False)
+    for ax, (nm, pred) in zip(axes[0], preds.items()):
+        C = confusion_matrix(pred, y_true, labels=[0, 1])                         # [2, 2] 예측(행) x 실제(열)
+        R = C / np.maximum(C.sum(0, keepdims=True), 1)                          # 실제 클래스(열)별 비율
+        ax.imshow(R, cmap='Blues', vmin=0, vmax=1)
+        for i in range(2):
+            for j in range(2):
+                ax.text(j, i, f'{R[i, j]:.2f}\n{int(C[i, j]):,}', ha='center', va='center',
+                        fontsize=9, color='white' if R[i, j] > .5 else 'black')
+        ax.set_xticks(range(2), classes, fontsize=8); ax.set_yticks(range(2), classes, fontsize=8)
+        ax.set_xlabel('observed'); ax.set_ylabel('predicted'); ax.set_title(nm, fontsize=9)
     fig.suptitle(title, fontsize=9)
-    fig.tight_layout(rect=[0, 0, 1, .93])
-    fig.savefig(path, dpi=140); plt.close(fig)
+    fig.tight_layout(rect=[0, 0, 1, .93]); fig.savefig(path, dpi=140); plt.close(fig)
 
 
 def scatter_plot(sets, path, title):
@@ -94,20 +75,21 @@ def sign_confusion_plot(sets, path, title, classes):
 
 
 def reliability_plot(tables, path, title=''):
-    """{신뢰도 이름: metrics.reliability_table 결과} · 저장 경로 · 제목 -> 보정 그림 [2, 신뢰도 수] (위 행 = 보정 전, 아래 행 = 보정 후)
+    """{신뢰도 이름: metrics.reliability_table 결과} · 저장 경로 · 제목 -> 보정 그림
+       신뢰도 1개 = [1, 2] (보정 전 | 후), 여러 개 = [2, 신뢰도 수] (위 행 = 보정 전, 아래 행 = 보정 후)
        구간마다 원 하나 - 가로 = 실제 비율, 세로 = 예측 확률, 원 넓이 = 구간 예측 수 / 전체 예측 수 (최소 4 pt^2)"""
     n = len(tables)
-    fig, axes = plt.subplots(2, n, figsize=(4.6 * n, 9.4), squeeze=False)
+    fig, axes = plt.subplots(*((1, 2) if n == 1 else (2, n)), figsize=((9.4, 5.2) if n == 1 else (4.6 * n, 9.4)), squeeze=False)
     for c, (name, T) in enumerate(tables.items()):
         for r, stage in enumerate(('before', 'after')):
-            ax, t = axes[r, c], T[T.stage == stage]
+            ax, t = (axes[0, r] if n == 1 else axes[r, c]), T[T.stage == stage]
             ax.scatter(t.observed, t.predicted, s=np.maximum(800 * t.n / t.n.sum(), 4), color=f'C{r}', edgecolor='white', zorder=3)   # C0 = 보정 전, C1 = 보정 후
             ax.plot([0, 1], [0, 1], 'k--', lw=1)
             ax.set_xlim(0, 1); ax.set_ylim(0, 1); ax.set_aspect('equal'); ax.grid(alpha=.3)
             ax.set_xlabel('observed share'); ax.set_ylabel(f'predicted {name}')
             ax.set_title(f'{name} - {stage} calibration', fontsize=10)
     fig.text(0.5, 0.01, 'held-out genera; one circle per probability bin; circle area is proportional to the share of predictions in the bin',
-             ha='center', fontsize=9, color='#555555')
+             ha='center', fontsize=8, color='#555555')
     if title:
         fig.suptitle(title, fontsize=10)
-    fig.tight_layout(rect=(0, 0.03, 1, 0.97 if title else 1)); fig.savefig(path, dpi=140); plt.close(fig)
+    fig.tight_layout(rect=(0, 0.07 if n == 1 else 0.04, 1, 0.95 if title else 1)); fig.savefig(path, dpi=140); plt.close(fig)

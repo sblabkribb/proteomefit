@@ -1,2 +1,0 @@
-org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,mcc_before,f1_before,recall_before,precision_before,accuracy_before,pr_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after,mcc_after,f1_after,recall_after,precision_after,accuracy_after,pr_auc_after
-acidovorax_3H11,4428,504,0.038809,0.045516,0.244481,0.933425,0.720029,0.747881,0.700397,0.802273,0.946251,0.813063,0.021117,0.04325,0.166672,0.932678,0.714797,0.731876,0.630952,0.871233,0.94738,0.80948

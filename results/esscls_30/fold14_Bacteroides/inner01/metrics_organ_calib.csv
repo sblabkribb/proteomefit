@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc,ece,brier,log_loss
+14,Bacteroides,1,Btheta,4432,378,188,4034,20,190,0.650326,0.641638,0.497354,0.903846,0.952617,0.957707,0.81011,0.070944,0.040312,0.165736

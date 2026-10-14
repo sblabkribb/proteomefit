@@ -1,3 +1,0 @@
-fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc
-6,Desulfovibrio,2,DvH,3124,399,207,2667,58,192,0.595997,0.623494,0.518797,0.781132,0.919974,0.866493,0.679611
-6,Desulfovibrio,2,Miya,2823,312,146,2450,61,166,0.533633,0.56262,0.467949,0.705314,0.919589,0.842917,0.611924

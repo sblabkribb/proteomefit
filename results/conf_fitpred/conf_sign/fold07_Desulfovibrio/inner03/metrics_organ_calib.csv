@@ -1,0 +1,3 @@
+fold,genus,inner,org_id,n,n_pos,ece,brier,log_loss,roc_auc
+7,Desulfovibrio,3,DvH,2725,1698,0.011757,0.230133,0.65272,0.571408
+7,Desulfovibrio,3,Miya,2511,1615,0.038626,0.218503,0.6286,0.616638

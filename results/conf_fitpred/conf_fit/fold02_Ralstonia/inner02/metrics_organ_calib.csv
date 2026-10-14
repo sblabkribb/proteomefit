@@ -1,0 +1,5 @@
+fold,genus,inner,org_id,n,n_pos,ece,brier,log_loss,roc_auc
+2,Ralstonia,2,RalstoniaBSBF1503,3652,2085,0.042169,0.20077,0.58933,0.750087
+2,Ralstonia,2,RalstoniaGMI1000,3853,2071,0.040126,0.212837,0.614866,0.723228
+2,Ralstonia,2,RalstoniaPSI07,3898,2033,0.038674,0.215812,0.621665,0.713193
+2,Ralstonia,2,RalstoniaUW163,3667,2000,0.029397,0.208976,0.606952,0.728808

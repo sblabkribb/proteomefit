@@ -1,2 +1,0 @@
-org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after
-Magneto,3155,1760,0.242803,0.318126,1.006415,0.530934,0.053538,0.247624,0.688733,0.554915

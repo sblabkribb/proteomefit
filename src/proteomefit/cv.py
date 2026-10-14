@@ -34,6 +34,14 @@ def with_stats(df, keys, stat_col):
     return pd.concat([df, agg], ignore_index=True), agg
 
 
+def genus_row(k, genus, val_genera, n_test, extra, inn, sd_cols):
+    """외부 폴드 번호 · genus · 검증 genus 목록 · 시험 샘플 수 · 추가 열 dict · 내부 폴드 표 · 평균 · 표준편차를 남길 열
+       -> genus 행 dict (metrics_total.csv 1줄) - genus 성능 = 내부 폴드 지표의 평균 · 표준편차"""
+    return dict(fold=k + 1, genus=genus, val_genera=';'.join(val_genera), n_test=n_test, **extra, n_org=int(inn.n_org.iloc[0]),
+                best_epoch_med=inn.best_epoch.median(), best_epoch_mean=inn.best_epoch.mean(), best_epoch_sd=inn.best_epoch.std(),
+                **{kv: val for c in sd_cols for kv, val in ((c, inn[c].mean()), (c + '_sd', inn[c].std()))})
+
+
 def run_cv(task, D, S, cfg, inputs, out_dir, name=''):
     """입력 조합 inputs 의 중첩 교차검증 -> genus별 결과 DataFrame [n_fold, *] (metrics_total.csv 도 저장)
        내부 폴드마다 데이터셋 생성(시험 · 검증 genus 를 참조에서 제외, 훈련 샘플 기준 표준화) -> 훈련(조기 종료) -> 테스트 genus 평가"""
@@ -93,12 +101,7 @@ def run_cv(task, D, S, cfg, inputs, out_dir, name=''):
         with_stats(inn, {'fold': k + 1, 'genus': G}, 'inner')[0].round(cfg.csv_round).to_csv(
             os.path.join(fdir, 'metrics_folds.csv'), index=False)
 
-        # genus 성능 = 내부 폴드 지표의 평균 · 표준편차
-        rows_tot.append(dict(fold=k + 1, genus=G, val_genera=';'.join(S.GENERA[S.VAL_G[k]]), n_test=len(te),
-                             **task.genus_extra(te), n_org=int(inn.n_org.iloc[0]),
-                             best_epoch_med=inn.best_epoch.median(), best_epoch_mean=inn.best_epoch.mean(),
-                             best_epoch_sd=inn.best_epoch.std(),
-                             **{kv: val for c in task.sd_cols for kv, val in ((c, inn[c].mean()), (c + '_sd', inn[c].std()))}))
+        rows_tot.append(genus_row(k, G, S.GENERA[S.VAL_G[k]], len(te), task.genus_extra(te), inn, task.sd_cols))
         m  = rows_tot[-1]
         pm = lambda c: f'{m[c]:.3f}±{m[c + "_sd"]:.3f}'
         print(f'  {pre}fold {k+1}/{S.n_fold} {G} ({hms(time.perf_counter() - t_fold)}) '
@@ -163,11 +166,12 @@ def print_summary(task, res, n_fold, inner_k, elapsed):
     print((top if len(top) <= 10 else pd.concat([top.head(5), top.tail(5)])).round(3).to_string(index=False))
 
 
-def summarize_ablations(task, RES, ablations, full_inputs, full_dir, out_dir, block_dim, genera, csv_round):
-    """ablation별 genus 결과 RES {이름: DataFrame} -> ablation_summary.csv · genus x ablation 주 지표 표 저장 -> 요약 DataFrame
-       full_dir/metrics_total.csv(전체 입력 모델)가 있으면 비교 기준 'full' 로 싣고 차이(delta_col) · 나빠진 genus 수를 더한다"""
+def summarize_ablations(task, RES, ablations, full_inputs, full_dir, out_dir, block_dim, genera, csv_round, suffix=''):
+    """ablation별 genus 결과 RES {이름: DataFrame} -> ablation_summary{suffix}.csv · genus x ablation 주 지표 표 저장 -> 요약 DataFrame
+       full_dir/metrics_total{suffix}.csv(전체 입력 모델)가 있으면 비교 기준 'full' 로 싣고 차이(delta_col) · 나빠진 genus 수를 더한다
+       suffix = '' (원 모델) | '_calib' (보정 확률 판정, calib.nested_cv 결과)"""
     tgt, tabs = task.target, {}
-    f_full = os.path.join(full_dir, 'metrics_total.csv')
+    f_full = os.path.join(full_dir, f'metrics_total{suffix}.csv')
     if os.path.exists(f_full):
         full = pd.read_csv(f_full)
         tabs['full'] = (full_inputs, full[pd.to_numeric(full.fold, errors='coerce').notna()])   # mean · median · std 줄 제외
@@ -183,11 +187,12 @@ def summarize_ablations(task, RES, ablations, full_inputs, full_dir, out_dir, bl
     if 'full' in tabs:
         summ[task.delta_col] = summ[tgt] - summ[tgt][summ.ablation == 'full'].iloc[0]
         summ['n_genus_worse'] = [int((gm[n] < gm['full']).sum()) for n in summ.ablation]
-    summ.round(csv_round).to_csv(os.path.join(out_dir, 'ablation_summary.csv'), index=False)
-    gm.round(csv_round).to_csv(os.path.join(out_dir, task.genus_file), index_label='genus')
+    genus_file = task.genus_file.replace('.csv', f'{suffix}.csv')
+    summ.round(csv_round).to_csv(os.path.join(out_dir, f'ablation_summary{suffix}.csv'), index=False)
+    gm.round(csv_round).to_csv(os.path.join(out_dir, genus_file), index_label='genus')
 
     cols = ['ablation', 'width', 'n_genus', 'n_epoch_final'] + task.abl_show \
            + ([task.delta_col, 'n_genus_worse'] if 'full' in tabs else [])
     print(summ[cols].round(3).to_string(index=False))
-    print(f'\nsaved {out_dir}/ablation_summary.csv | {task.genus_file} | <ablation>/metrics_total.csv · model_final.pt')
+    print(f'\nsaved {out_dir}/ablation_summary{suffix}.csv | {genus_file}')
     return summ

@@ -1,2 +1,0 @@
-org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,mcc_before,f1_before,recall_before,precision_before,accuracy_before,pr_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after,mcc_after,f1_after,recall_after,precision_after,accuracy_after,pr_auc_after
-BFirm,5830,409,0.035137,0.039755,0.286146,0.879935,0.618789,0.633803,0.550122,0.747508,0.955403,0.638795,0.019735,0.037191,0.158042,0.871085,0.627613,0.627093,0.503667,0.830645,0.957976,0.635928

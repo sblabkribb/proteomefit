@@ -1,2 +1,0 @@
-org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after
-Keio,3585,2011,0.240396,0.315352,1.075212,0.54289,0.025036,0.235111,0.662879,0.617341

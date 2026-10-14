@@ -1,2 +1,0 @@
-fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc
-22,Caulobacter,1,Caulo,3745,440,331,3171,134,109,0.694965,0.731492,0.752273,0.711828,0.935113,0.940339,0.779068

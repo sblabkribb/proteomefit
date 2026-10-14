@@ -1,2 +1,0 @@
-org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after
-Kang,1989,1275,0.141404,0.25441,0.874163,0.566835,0.170543,0.195031,0.580244,0.795752

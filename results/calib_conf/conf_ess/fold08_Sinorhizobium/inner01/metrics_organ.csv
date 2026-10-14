@@ -1,2 +1,0 @@
-org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,mcc_before,f1_before,recall_before,precision_before,accuracy_before,pr_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after,mcc_after,f1_after,recall_after,precision_after,accuracy_after,pr_auc_after
-Smeli,5689,559,0.044254,0.050274,0.247504,0.911799,0.646782,0.674533,0.613596,0.748908,0.941818,0.73595,0.023878,0.046466,0.180742,0.9117,0.645346,0.655773,0.538462,0.83844,0.944454,0.733187

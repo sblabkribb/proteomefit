@@ -1,2 +1,0 @@
-org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,mcc_before,f1_before,recall_before,precision_before,accuracy_before,pr_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after,mcc_after,f1_after,recall_after,precision_after,accuracy_after,pr_auc_after
-azobra,4518,340,0.030689,0.03457,0.201112,0.901951,0.701015,0.719493,0.667647,0.780069,0.960823,0.737119,0.01255,0.032016,0.134398,0.900848,0.697266,0.704663,0.6,0.853556,0.962151,0.733297

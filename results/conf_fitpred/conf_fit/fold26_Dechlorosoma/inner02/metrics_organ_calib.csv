@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,ece,brier,log_loss,roc_auc
+26,Dechlorosoma,2,PS,2550,1091,0.072688,0.218911,0.624443,0.704898

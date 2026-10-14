@@ -15,6 +15,7 @@ results/**/*.pt
 !results/**/model_final.pt
 results/**/*.pkl
 !results/**/model_final.pkl
+!results/**/model_final_calib.pkl
 
 # Python · Jupyter
 __pycache__/

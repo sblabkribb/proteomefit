@@ -1,2 +1,0 @@
-org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after
-Pedo557,4359,2494,0.11085,0.257082,0.709675,0.5,0.050651,0.190967,0.566728,0.764871

@@ -1,2 +1,0 @@
-org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after
-Caulo,3305,1689,0.212184,0.31044,0.86756,0.491455,0.061733,0.244938,0.68322,0.586008

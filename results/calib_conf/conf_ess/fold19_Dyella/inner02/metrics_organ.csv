@@ -1,2 +1,0 @@
-org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,mcc_before,f1_before,recall_before,precision_before,accuracy_before,pr_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after,mcc_after,f1_after,recall_after,precision_after,accuracy_after,pr_auc_after
-Dyella79,3982,371,0.031292,0.040676,0.165239,0.948297,0.70934,0.736842,0.754717,0.719794,0.949774,0.805019,0.004828,0.035919,0.136194,0.948107,0.710577,0.727549,0.644205,0.835664,0.955048,0.80068

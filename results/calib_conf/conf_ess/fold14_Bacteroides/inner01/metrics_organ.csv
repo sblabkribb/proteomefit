@@ -1,2 +1,0 @@
-org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,mcc_before,f1_before,recall_before,precision_before,accuracy_before,pr_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after,mcc_after,f1_after,recall_after,precision_after,accuracy_after,pr_auc_after
-Btheta,4432,378,0.146564,0.062795,0.252949,0.960856,0.666345,0.685775,0.854497,0.572695,0.933213,0.816192,0.08655,0.042737,0.180832,0.960961,0.621128,0.60424,0.452381,0.909574,0.949458,0.809039

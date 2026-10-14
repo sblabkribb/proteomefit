@@ -1,2 +1,0 @@
-org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after
-Cup4G11,6373,2963,0.21807,0.296325,0.791976,0.5,0.055293,0.223621,0.637059,0.694674
