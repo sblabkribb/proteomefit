@@ -111,6 +111,11 @@ def fit_inner(name, X, hit, tr, va, te, jd):
     return b, z['table'], lookup(z['table'], axes, X[va]), z['prob']
 
 
+def note(t):
+    """균주별 지표 표 (또는 genus 표) -> 보정 그림 패널 지표 줄 (평균)"""
+    return f'ECE {t.ece.mean():.3f}  Brier {t.brier.mean():.3f}  log loss {t.log_loss.mean():.3f}'
+
+
 def nested_cv(name, df, src, out_dir):
     """신뢰도 이름 · 예측 표 · 원 모델 결과 폴더 · 결과 폴더 -> (genus별 보정 후 결과 [n_fold, *], 보정 전 · 후 비교 표, 확인 표)
        내부 폴드 행 = 원 모델 metrics_folds.csv 의 분할 열 (val_genus · val_sim · val_nn) + 보정 결과"""
@@ -137,9 +142,10 @@ def nested_cv(name, df, src, out_dir):
                             n_org=len(tot), best_epoch=b, **{sc: org_table(name, org[va], hit[va], p_va)[1][SCORE[name]].mean()},
                             **org_summary(tot, base), **org_summary(tot, cols[len(base):])))
             inn_b.append({c: tot_b[c].mean() for c in cols})
-            reliability_plot({f'conf_{name}': reliability_table(hit[te], {'before': before[te], 'after': p_te}, BINS)}, f'{jd}/calibration.png', tag)
+            reliability_plot({f'conf_{name}': reliability_table(hit[te], {'before': before[te], 'after': p_te}, BINS)}, f'{jd}/calibration.png', tag,
+                             {f'conf_{name}': {'before': note(tot_b), 'after': note(tot)}})
             if name == 'ess':
-                confusion_plot(hit[te], {f'{st} calibration | MCC {t.mcc.mean():.3f}  recall {t.recall.mean():.3f}  precision {t.precision.mean():.3f}':
+                confusion_plot(hit[te], {f'{st} calibration\nMCC {t.mcc.mean():.3f}  recall {t.recall.mean():.3f}  precision {t.precision.mean():.3f}':
                                          (p >= 0.5).astype(int) for st, p, t in (('before', before[te], tot_b), ('after', p_te, tot))},
                                f'{jd}/confusion.png', tag, CLASSES)
             pool.append(pd.DataFrame({'before': before[te], 'after': p_te, 'hit': hit[te]}))
@@ -159,7 +165,8 @@ def nested_cv(name, df, src, out_dir):
     P = pd.concat(pool, ignore_index=True)
     check = reliability_table(P.hit.values, {'before': P.before.values, 'after': P.after.values}, BINS)
     check.round(4).to_csv(f'{out_dir}/check_calib.csv', index=False)
-    reliability_plot({f'conf_{name}': check}, f'{out_dir}/calibration.png', f'conf_{name} - {os.path.basename(os.path.normpath(out_dir))}')
+    reliability_plot({f'conf_{name}': check}, f'{out_dir}/calibration.png', f'conf_{name} - {os.path.basename(os.path.normpath(out_dir))} (genus mean)',
+                     {f'conf_{name}': {'before': note(res_b), 'after': note(res)}})
     return res, cmp, check
 
 

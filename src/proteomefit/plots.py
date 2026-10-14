@@ -20,7 +20,8 @@ def plot_history(hist, best_ep, path, score, loss_label, score_label):
 
 
 def confusion_plot(y_true, preds, path, title, classes):
-    """분류 - 라벨 [m] · {패널 제목: 0/1 예측 [m]} -> 혼동행렬 [1, 패널 수] (행 = 예측 · 열 = 실제, 실제 클래스 기준 정규화)"""
+    """분류 - 라벨 [m] · {패널 제목: 0/1 예측 [m]} -> 혼동행렬 [1, 패널 수] (행 = 예측 · 열 = 실제, 실제 클래스 기준 정규화)
+       대제목 아래 줄 = 전체 n"""
     fig, axes = plt.subplots(1, len(preds), figsize=(5.2 * len(preds), 4.8), squeeze=False)
     for ax, (nm, pred) in zip(axes[0], preds.items()):
         C = confusion_matrix(pred, y_true, labels=[0, 1])                         # [2, 2] 예측(행) x 실제(열)
@@ -32,8 +33,8 @@ def confusion_plot(y_true, preds, path, title, classes):
                         fontsize=9, color='white' if R[i, j] > .5 else 'black')
         ax.set_xticks(range(2), classes, fontsize=8); ax.set_yticks(range(2), classes, fontsize=8)
         ax.set_xlabel('observed'); ax.set_ylabel('predicted'); ax.set_title(nm, fontsize=9)
-    fig.suptitle(title, fontsize=9)
-    fig.tight_layout(rect=[0, 0, 1, .93]); fig.savefig(path, dpi=140); plt.close(fig)
+    fig.suptitle(f'{title}\nn = {len(y_true):,}', fontsize=9)
+    fig.tight_layout(rect=[0, 0, 1, .91]); fig.savefig(path, dpi=140); plt.close(fig)
 
 
 def scatter_plot(sets, path, title):
@@ -74,22 +75,29 @@ def sign_confusion_plot(sets, path, title, classes):
     fig.tight_layout(rect=[0, 0, 1, .92]); fig.savefig(path, dpi=140); plt.close(fig)
 
 
-def reliability_plot(tables, path, title=''):
-    """{신뢰도 이름: metrics.reliability_table 결과} · 저장 경로 · 제목 -> 보정 그림
+def reliability_plot(tables, path, title='', notes=None):
+    """{신뢰도 이름: metrics.reliability_table 결과} · 저장 경로 · 제목 · {신뢰도 이름: {단계: 지표 줄}} -> 보정 그림
        신뢰도 1개 = [1, 2] (보정 전 | 후), 여러 개 = [2, 신뢰도 수] (위 행 = 보정 전, 아래 행 = 보정 후)
-       구간마다 원 하나 - 가로 = 실제 비율, 세로 = 예측 확률, 원 넓이 = 구간 예측 수 / 전체 예측 수 (최소 4 pt^2)"""
+       구간마다 원 하나 - 가로 = 실제 비율, 세로 = 예측 확률, 원 넓이 = 구간 예측 수 / 전체 예측 수 (최소 4 pt^2)
+       패널 제목 아래 줄 = notes 의 지표, 대제목 아래 줄 = 전체 n, 그림 아래 = 원 크기 범례 (n) 한 줄"""
     n = len(tables)
-    fig, axes = plt.subplots(*((1, 2) if n == 1 else (2, n)), figsize=((9.4, 5.2) if n == 1 else (4.6 * n, 9.4)), squeeze=False)
+    N = next(iter(tables.values())).query("stage == 'after'").n.sum()        # 전체 예측 수 (패널 공통)
+    size = lambda v: np.maximum(800 * v / N, 4)                              # 예측 수 -> 원 넓이 (pt^2)
+    fig, axes = plt.subplots(*((1, 2) if n == 1 else (2, n)), figsize=((10, 5.9) if n == 1 else (4.8 * n, 10.3)), squeeze=False)
     for c, (name, T) in enumerate(tables.items()):
         for r, stage in enumerate(('before', 'after')):
             ax, t = (axes[0, r] if n == 1 else axes[r, c]), T[T.stage == stage]
-            ax.scatter(t.observed, t.predicted, s=np.maximum(800 * t.n / t.n.sum(), 4), color=f'C{r}', edgecolor='white', zorder=3)   # C0 = 보정 전, C1 = 보정 후
+            ax.scatter(t.observed, t.predicted, s=size(t.n), color=f'C{r}', edgecolor='white', zorder=3)   # C0 = 보정 전, C1 = 보정 후
             ax.plot([0, 1], [0, 1], 'k--', lw=1)
             ax.set_xlim(0, 1); ax.set_ylim(0, 1); ax.set_aspect('equal'); ax.grid(alpha=.3)
             ax.set_xlabel('observed share'); ax.set_ylabel(f'predicted {name}')
-            ax.set_title(f'{name} - {stage} calibration', fontsize=10)
+            note = (notes or {}).get(name, {}).get(stage, '')
+            ax.set_title(f'{name} - {stage} calibration' + (f'\n{note}' if note else ''), fontsize=9)
+    vals = [int(float(f'{N * q:.1g}')) for q in (0.01, 0.1, 0.5)]           # 범례 n = 전체의 약 1 · 10 · 50 % (유효숫자 1자리)
+    hs = [plt.scatter([], [], s=size(v), color='0.55', edgecolor='white') for v in vals]
+    fig.legend(hs, [f'{v:,}' for v in vals], title='n (predictions in the bin)', loc='lower center', ncol=len(vals),
+               bbox_to_anchor=(0.5, 0.03), fontsize=8, title_fontsize=8, frameon=False, columnspacing=3, handletextpad=1)
     fig.text(0.5, 0.01, 'held-out genera; one circle per probability bin; circle area is proportional to the share of predictions in the bin',
              ha='center', fontsize=8, color='#555555')
-    if title:
-        fig.suptitle(title, fontsize=10)
-    fig.tight_layout(rect=(0, 0.07 if n == 1 else 0.04, 1, 0.95 if title else 1)); fig.savefig(path, dpi=140); plt.close(fig)
+    fig.suptitle((f'{title}\n' if title else '') + f'n = {N:,}', fontsize=10)
+    fig.tight_layout(rect=(0, 0.15 if n == 1 else 0.08, 1, 0.93 if n == 1 else 0.96), h_pad=3); fig.savefig(path, dpi=140); plt.close(fig)
