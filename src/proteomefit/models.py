@@ -15,7 +15,7 @@ def ds_blocks(inputs):
 
 class PMA(nn.Module):
     """Pooling by Multihead Attention (시드 1개) - 토큰 [B,T,D] + 패딩 마스크 [B,T] -> [B,D]
-       파라미터는 nn.MultiheadAttention 것을 그대로 쓰고, 계산만 시드 쿼리가 고정이라는 점을 이용해 직접 한다 (값은 같다)"""
+       파라미터 = nn.MultiheadAttention, 계산은 고정 시드 쿼리로 직접 한다"""
     def __init__(self, dim, n_head, droprate):
         super().__init__()
         self.q = nn.Parameter(torch.randn(1, 1, dim) * 0.02)          # 시드 벡터 [1,1,D]
@@ -23,9 +23,7 @@ class PMA(nn.Module):
         self.norm = nn.LayerNorm(dim)
 
     def forward(self, tok, pad):
-        """nn.MultiheadAttention(q, tok, tok) 와 같은 값을 토큰별 키 · 값 투영 없이 계산한다
-           점수 q_h · (W_k,h e + b_k,h) = (W_k,h^T q_h) · e + 상수 -> [D, H] 가중치 하나와의 곱 (상수는 softmax 에서 상쇄)
-           출력 Σ_t a_t (W_v,h e_t + b_v,h) = W_v,h (Σ_t a_t e_t) + (Σ_t a_t) b_v,h -> 값 투영을 가중 평균 뒤로 미룬다"""
+        """nn.MultiheadAttention(q, tok, tok) 와 같은 값 - 키 투영은 쿼리 쪽 [D, H] 가중치로 접고, 값 투영은 토큰 가중 평균 뒤에 한다"""
         B, D, H = len(tok), tok.shape[-1], self.attn.num_heads
         Wq, Wk, Wv = self.attn.in_proj_weight.view(3, H, D // H, D)          # 헤드별 투영 [H, dh, D] x 3
         bq, _, bv = self.attn.in_proj_bias.view(3, H, D // H)                # 헤드별 편향 [H, dh] x 3 (키 편향은 상쇄)
@@ -52,18 +50,18 @@ class SeqBranch(nn.Module):
 
 class Backbone(nn.Module):
     """입력 조합 inputs 의 연결 벡터 - seq · esm 분기(입력에 있을 때만) + 데이터셋 -> [B, d_in]
-       block_dim: 입력별 폭 dict (예: {'seq': 64, 'esm': 1152, 'prot': 1152, ...})"""
+       block_dim: 입력별 폭 dict"""
     def __init__(self, inputs, block_dim, seq_dim=64, seq_head=4, n_head=8, droprate=0.3, max_len=4096):
         super().__init__()
         self.pool_esm = PMA(block_dim['esm'], n_head, droprate) if 'esm' in inputs else None
         self.seq = SeqBranch(seq_dim, seq_head, droprate, max_len) if 'seq' in inputs else None
-        self.var = [b for b in inputs if b in VAR_INPUTS]             # 가변 길이 입력의 연결 순서 (예: ['seq', 'esm'])
+        self.var = [b for b in inputs if b in VAR_INPUTS]             # 가변 길이 입력의 연결 순서
         self.widths = [block_dim[b] for b in self.var + ds_blocks(inputs)]   # 연결 순서의 블록 폭
-        self.d_in = sum(self.widths)                                  # 연결 벡터 폭 (예: 전체 입력 2712, prot 1152)
+        self.d_in = sum(self.widths)                                  # 연결 벡터 폭
 
     def concat(self, tok, pad, seq, ds):
         h = {}
-        if self.pool_esm is not None:                                 # ESM 분기를 먼저 계산 (03 노트북의 드롭아웃 난수 순서)
+        if self.pool_esm is not None:                                 # ESM 분기 먼저 (드롭아웃 난수 순서)
             h['esm'] = self.pool_esm(tok, pad).float()                # [B, 1152]
         if self.seq is not None:
             h['seq'] = self.seq(seq).float()                          # [B, 64]
@@ -78,22 +76,21 @@ class EssNet(Backbone):
         for h in mlp_hidden:
             layers += [nn.Linear(d, h), nn.GELU(), nn.Dropout(droprate)]
             d = h
-        self.mlp = nn.Sequential(*layers, nn.Linear(d, 1))            # 예: 2712 -> 640 -> 320 -> 1
+        self.mlp = nn.Sequential(*layers, nn.Linear(d, 1))
 
     def forward(self, tok, pad, seq, ds):
         return self.mlp(self.concat(tok, pad, seq, ds)).squeeze(1)    # [B] 로짓
 
 
 def block_bounds(widths):
-    """블록 폭 목록 -> 블록 경계 [(start, stop), ...] (예: [64, 1152] -> [(0, 64), (64, 1216)])"""
+    """블록 폭 목록 -> 블록 경계 [(start, stop), ...]"""
     e = np.cumsum([0] + list(widths))
     return [(int(a), int(b)) for a, b in zip(e[:-1], e[1:])]
 
 
 def make_branch_idx(bounds, n_branch, m, rng, block_p):
     """블록 경계 [(start, stop), ...] -> 가지별 입력 열 번호 [n_branch, m] int64
-       가지마다 블록을 확률 block_p 로 고르고(하나도 없으면 1개), 고른 블록에 열 m 개를 균등 배분해 무작위로 뽑는다
-       예: 가지가 prot · ctx 를 고르면 두 블록에서 각 64열 -> 128열"""
+       가지마다 블록을 확률 block_p 로 고르고(하나도 없으면 1개), 고른 블록에 열 m 개를 균등 배분해 무작위로 뽑는다"""
     idx = np.empty((n_branch, m), np.int64)
     for b in range(n_branch):
         pick = [k for k in range(len(bounds)) if rng.random() < block_p] or [int(rng.integers(len(bounds)))]
@@ -113,7 +110,7 @@ class BranchBank(nn.Module):
         self.register_buffer('idx', idx)
         K, m = idx.shape
         self.drop = droprate
-        dims = [m, *hidden, 1]                                        # 층별 노드 수 (예: m 128, hidden [64, 32] -> [128, 64, 32, 1])
+        dims = [m, *hidden, 1]                                        # 층별 노드 수
         self.W = nn.ParameterList([nn.Parameter(torch.randn(K, a, b) * ((2.0 if b > 1 else 1.0) / a) ** 0.5)
                                    for a, b in zip(dims[:-1], dims[1:])])   # 가지별 가중치 [K, a, b] (은닉층 He, 출력층 1/a)
         self.b = nn.ParameterList([nn.Parameter(torch.zeros(K, 1, b)) for b in dims[1:]])   # 가지별 편향 [K, 1, b]
@@ -140,7 +137,7 @@ class FitNet(Backbone):
 
 
 def param_summary(model):
-    """모델 -> '전체 파라미터 수 = 자식 모듈별 파라미터 수' 문자열 (단위 백만, 예: 'a.aaM = pool_esm b.bbM + seq c.ccM + mlp d.ddM')"""
+    """모델 -> '전체 파라미터 수 = 자식 모듈별 파라미터 수' 문자열 (단위 백만)"""
     par = lambda m: sum(p.numel() for p in m.parameters()) / 1e6
     parts = [f'{nm} {par(m):.2f}M' for nm, m in model.named_children() if par(m) > 0]
     return f'{par(model):.2f}M = ' + ' + '.join(parts)

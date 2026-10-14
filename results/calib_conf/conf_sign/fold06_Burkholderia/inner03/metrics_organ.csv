@@ -1,0 +1,2 @@
+org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after
+BFirm,5421,3101,0.220396,0.303834,0.943468,0.53927,0.035424,0.243408,0.680009,0.548132

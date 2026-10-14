@@ -1,0 +1,2 @@
+org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,mcc_before,f1_before,recall_before,precision_before,accuracy_before,pr_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after,mcc_after,f1_after,recall_after,precision_after,accuracy_after,pr_auc_after
+Dino,3720,535,0.041924,0.046858,0.272154,0.9441,0.770786,0.800395,0.757009,0.849057,0.945699,0.860467,0.020357,0.045091,0.174538,0.943294,0.773298,0.797521,0.721495,0.891455,0.947312,0.847258

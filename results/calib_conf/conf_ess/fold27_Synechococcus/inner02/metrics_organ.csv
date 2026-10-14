@@ -1,0 +1,2 @@
+org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,mcc_before,f1_before,recall_before,precision_before,accuracy_before,pr_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after,mcc_after,f1_after,recall_after,precision_after,accuracy_after,pr_auc_after
+SynE,2512,614,0.161331,0.171589,0.901185,0.779624,0.405475,0.420798,0.283388,0.816901,0.809315,0.609426,0.165147,0.176667,0.667435,0.779329,0.356313,0.325828,0.200326,0.87234,0.797373,0.607171

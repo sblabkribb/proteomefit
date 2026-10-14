@@ -6,8 +6,7 @@ from tqdm import tqdm
 
 
 def split_basedata(tsv, out_dir):
-    """통합 TSV -> 균주별 TSV '순번_org_id.tsv' (행 · 문자열 그대로, 순번 = TSV 등장 순서)
-       예: 01_acidovorax_3H11.tsv, 02_ANA3.tsv, ... 반환 = 파일 수"""
+    """통합 TSV -> 균주별 TSV '순번_org_id.tsv' (행 · 문자열 그대로, 순번 = TSV 등장 순서), 반환 = 파일 수"""
     os.makedirs(out_dir, exist_ok=True)
     out, cur, i = None, None, 0
     with open(tsv, encoding='utf-8', newline='') as f:
@@ -25,7 +24,7 @@ def split_basedata(tsv, out_dir):
     return i
 
 
-ID_DTYPE = {'org_id': str, 'org_name': str, 'gene_id': str, 'gene_name': str}   # 숫자뿐인 locusId 도 문자열로 읽는다
+ID_DTYPE = {'org_id': str, 'org_name': str, 'gene_id': str, 'gene_name': str}   # ID 열은 문자열
 
 
 def load_basedata(base_dir, **kw):
@@ -64,6 +63,17 @@ def load_samples(base_dir, label_col, finite_only):
         y_rank_all=y_rank_all)
 
 
+def ess_labels(D):
+    """load_samples(finite_only=False) 결과 -> 필수 라벨 [n] (1 = 필수, fit_mean 이 -inf)"""
+    return np.isneginf(D.yb[D.keep]).astype(np.int64)
+
+
+def fit_labels(D):
+    """load_samples(finite_only=True) 결과 -> 균주별 z-정규화 fit_mean [n]"""
+    g = pd.Series(D.yb[D.keep]).groupby(D.org)
+    return ((D.yb[D.keep] - g.transform('mean')) / g.transform('std')).to_numpy()
+
+
 def load_embeddings(prot_h5, mean_h5, D):
     """ProteomeLM · ESM 토큰 평균 임베딩 -> (prot_raw [n_all, 1152], esm_mean_raw [n_all, 1152]) float32"""
     with h5py.File(prot_h5, 'r') as f:
@@ -78,7 +88,7 @@ def load_embeddings(prot_h5, mean_h5, D):
 
 def load_esm_tokens(esm_h5, D, device, dtype, chunk, reserve_gib):
     """사용 샘플의 ESM 토큰을 GPU 한 배열에 이어 붙인다 -> (esm [총 토큰 수, 1152], esm_off [n + 1], esm_len [n])
-       샘플 i = esm[esm_off[i]:esm_off[i+1]]. h5 를 chunk 개 단백질씩 연속으로 읽어 램에는 한 묶음만 머문다"""
+       샘플 i = esm[esm_off[i]:esm_off[i+1]]. h5 는 chunk 개 단백질씩 읽는다"""
     n_all = len(D.base)
     with h5py.File(esm_h5, 'r') as f:
         assert int(f.attrs['n_proteins']) == n_all, 'ESM h5/TSV size mismatch'
@@ -94,7 +104,7 @@ def load_esm_tokens(esm_h5, D, device, dtype, chunk, reserve_gib):
         dst = 0
         for a in tqdm(range(0, n_all, chunk), desc='ESM -> GPU'):
             z   = min(a + chunk, n_all)
-            blk = src[int(soff[a]):int(soff[z])]                         # 이 묶음의 전 토큰 [t, 1152] fp16 (연속 읽기)
+            blk = src[int(soff[a]):int(soff[z])]                         # 이 묶음의 전 토큰 [t, 1152] fp16
             blk = blk[np.repeat(used[a:z], np.diff(soff[a:z + 1]))]      # 사용 샘플의 토큰만 [t', 1152]
             esm[dst:dst + len(blk)] = torch.from_numpy(blk).to(device)   # fp16 -> bf16
             dst += len(blk)

@@ -1,0 +1,2 @@
+org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after
+Btheta,4054,2713,0.115003,0.231599,0.742646,0.60091,0.132774,0.201196,0.593163,0.747152

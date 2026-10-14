@@ -1,0 +1,2 @@
+org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,mcc_before,f1_before,recall_before,precision_before,accuracy_before,pr_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after,mcc_after,f1_after,recall_after,precision_after,accuracy_after,pr_auc_after
+Cup4G11,6847,474,0.022679,0.026059,0.109842,0.962877,0.755136,0.772217,0.797468,0.748515,0.967431,0.847319,0.010785,0.022181,0.092507,0.962985,0.778672,0.788927,0.721519,0.870229,0.973273,0.844745

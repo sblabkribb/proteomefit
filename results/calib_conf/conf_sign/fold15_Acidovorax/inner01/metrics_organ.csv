@@ -1,0 +1,2 @@
+org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after
+acidovorax_3H11,3924,2351,0.210527,0.290227,0.942495,0.560518,0.02138,0.232588,0.657844,0.586683

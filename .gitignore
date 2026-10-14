@@ -13,6 +13,8 @@ src/input_features_ko.md
 # 모델 가중치 - 폴드별 모델은 제외, 최종 모델(model_final.pt)만 포함
 results/**/*.pt
 !results/**/model_final.pt
+results/**/*.pkl
+!results/**/model_final.pkl
 
 # Python · Jupyter
 __pycache__/

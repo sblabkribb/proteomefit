@@ -1,12 +1,11 @@
-"""훈련 루프 (분류 · 회귀 공통) 와 손실 · 가중치 도구 - 과제별 차이는 tasks.EssTask · FitTask 가 맡는다"""
+"""훈련 루프 (분류 · 회귀 공통) · 손실 · 샘플 가중치"""
 import numpy as np, pandas as pd, torch
 from tqdm import tqdm
 from .batching import make_batches
 
 
 def taxon_weight(gen, org):
-    """훈련 샘플의 genus · 균주 [m] -> 분류군 역크기 가중치 [m] = 1 / (genus 안 균주 수 x 균주 샘플 수)
-       예: 균주 2개인 genus 의 4,000 샘플 균주 -> 1/8000 (균주 합 1/2, genus 합 1)"""
+    """훈련 샘플의 genus · 균주 [m] -> 분류군 역크기 가중치 [m] = 1 / (genus 안 균주 수 x 균주 샘플 수)"""
     d = pd.DataFrame({'g': gen, 'o': org})
     return 1.0 / (d.groupby('g').o.transform('nunique') * d.groupby('o').o.transform('size')).to_numpy()
 
@@ -24,7 +23,7 @@ def ccc_loss(P, obs, w):
 
 def bootstrap_counts(tr, n, n_branch, seed, device):
     """훈련 샘플 번호 tr [m] -> 가지별 부트스트랩 등장 횟수 [n, n_branch] uint8 GPU (훈련 밖 샘플 = 0)
-       가지마다 tr 에서 m 개를 복원 추출한다 (예: m 5 -> 한 가지의 횟수 [2, 0, 1, 1, 1], 0 = 이 가지가 못 본 샘플)"""
+       가지마다 tr 에서 m 개를 복원 추출한다"""
     g = torch.Generator(device).manual_seed(seed)
     t = torch.from_numpy(tr).to(device)                            # 훈련 샘플 번호 [m]
     C = torch.zeros(n, n_branch, dtype=torch.uint8, device=device) # [n, n_branch]

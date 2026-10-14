@@ -1,4 +1,4 @@
-"""그림 - 학습 곡선 · 혼동행렬 · 실측-예측 산점도 (파일로 저장하고 닫는다)"""
+"""그림 - 학습 곡선 · 혼동행렬 · 실측-예측 산점도 · 신뢰도 보정 (파일로 저장하고 닫는다)"""
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
@@ -9,7 +9,7 @@ def plot_history(hist, best_ep, path, score, loss_label, score_label):
     fig, axes = plt.subplots(1, 2, figsize=(11, 4))
     for ax, (a, b, name) in zip(axes, [('tr_loss', 'vl_loss', loss_label),
                                        (f'tr_{score}', f'vl_{score}', score_label)]):
-        ax.plot(hist.epoch, hist[a], '-o', lw=1.2, ms=2.5, label='train')   # 마커: epoch 가 1개여도 보인다
+        ax.plot(hist.epoch, hist[a], '-o', lw=1.2, ms=2.5, label='train')
         ax.plot(hist.epoch, hist[b], '-o', lw=1.2, ms=2.5, label='val')
         if best_ep:
             ax.axvline(best_ep, ls='--', c='0.4', lw=1, label=f'best epoch {best_ep}')
@@ -91,3 +91,23 @@ def sign_confusion_plot(sets, path, title, classes):
         ax.set_xlabel('observed (y > 0)'); ax.set_ylabel('predicted (mean > 0)'); ax.set_title(nm, fontsize=9)
     fig.suptitle(title, fontsize=9)
     fig.tight_layout(rect=[0, 0, 1, .92]); fig.savefig(path, dpi=140); plt.close(fig)
+
+
+def reliability_plot(tables, path, title=''):
+    """{신뢰도 이름: metrics.reliability_table 결과} · 저장 경로 · 제목 -> 보정 그림 [2, 신뢰도 수] (위 행 = 보정 전, 아래 행 = 보정 후)
+       구간마다 원 하나 - 가로 = 실제 비율, 세로 = 예측 확률, 원 넓이 = 구간 예측 수 / 전체 예측 수 (최소 4 pt^2)"""
+    n = len(tables)
+    fig, axes = plt.subplots(2, n, figsize=(4.6 * n, 9.4), squeeze=False)
+    for c, (name, T) in enumerate(tables.items()):
+        for r, stage in enumerate(('before', 'after')):
+            ax, t = axes[r, c], T[T.stage == stage]
+            ax.scatter(t.observed, t.predicted, s=np.maximum(800 * t.n / t.n.sum(), 4), color=f'C{r}', edgecolor='white', zorder=3)   # C0 = 보정 전, C1 = 보정 후
+            ax.plot([0, 1], [0, 1], 'k--', lw=1)
+            ax.set_xlim(0, 1); ax.set_ylim(0, 1); ax.set_aspect('equal'); ax.grid(alpha=.3)
+            ax.set_xlabel('observed share'); ax.set_ylabel(f'predicted {name}')
+            ax.set_title(f'{name} - {stage} calibration', fontsize=10)
+    fig.text(0.5, 0.01, 'held-out genera; one circle per probability bin; circle area is proportional to the share of predictions in the bin',
+             ha='center', fontsize=9, color='#555555')
+    if title:
+        fig.suptitle(title, fontsize=10)
+    fig.tight_layout(rect=(0, 0.03, 1, 0.97 if title else 1)); fig.savefig(path, dpi=140); plt.close(fig)

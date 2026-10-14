@@ -1,0 +1,7 @@
+fold,genus,inner,val_genus,n_test,best_iter,ece_before,brier_before,log_loss_before,roc_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after
+8,Paraburkholderia,1,Klebsiella,5147.0,31.0,0.057587,0.237588,0.668791,0.5,0.087857,0.204175,0.59716,0.726704
+8,Paraburkholderia,2,Escherichia,5147.0,49.0,0.081096,0.246192,0.686836,0.5,0.088557,0.189352,0.563822,0.787381
+8,Paraburkholderia,3,Dinoroseobacter,5147.0,81.0,0.094502,0.251099,0.697126,0.5,0.094238,0.175663,0.532844,0.822999
+8,Paraburkholderia,mean,,5147.0,53.666667,0.077728,0.24496,0.684251,0.5,0.090217,0.18973,0.564609,0.779028
+8,Paraburkholderia,median,,5147.0,49.0,0.081096,0.246192,0.686836,0.5,0.088557,0.189352,0.563822,0.787381
+8,Paraburkholderia,std,,0.0,25.32456,0.018686,0.006839,0.014344,0.0,0.003499,0.01426,0.032165,0.048688

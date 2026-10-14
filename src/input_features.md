@@ -1,7 +1,6 @@
 # Input Feature Specification
 
 This document describes the definition, source, computation and preprocessing of the input features that the `03-train_esscls` · `03-train_fitpred` · `04-ablation_esscls` · `04-ablation_fitpred` notebooks feed into the model.
-External facts not found in the notebook code (model size, Biopython metric definitions, etc.) were checked against the sources listed at the end of this document.
 
 ## Table of Contents
 
@@ -29,7 +28,7 @@ External facts not found in the notebook code (model size, Biopython metric defi
 | `ctxp` | dataset block | `[68]` | 68 | ortholog list (ProteomeLM space) + reference labels | as is |
 | `ctxb` | dataset block | `[68]` | 68 | ortholog list (combined space of both) + reference labels | as is |
 
-- **Dataset** — the fixed-length feature matrix (samples × columns) formed by concatenating the dataset blocks. It resides on the GPU and is rebuilt for every inner fold (because the context features depend on the fold)
+- **Dataset** — the fixed-length feature matrix (samples × columns) formed by concatenating the dataset blocks. It resides on the GPU and is rebuilt for every inner fold
 - **Concatenated vector** — the vector formed inside the model by concatenating the pooled outputs of `seq` · `esm` and the dataset, in that order. With the full input it has $64 + 1152 + 1152 + 140 + 3 \times 68 = 2712$ dimensions
 - **Sample** — one gene. esscls uses 195,354 samples (essential · non-essential), and fitpred uses 177,317 samples (genes with a numeric fitness value)
 - Embeddings and sequence features are computed on **all 217,468 proteins, including genes with unknown labels**, and then only the samples in use are selected
@@ -50,8 +49,6 @@ $$\tilde{x}_{ij} = \frac{x_{ij} - \mu_{o(i),j}}{\sigma_{o(i),j} + 10^{-6}}$$
 
 - $x_{ij}$ — the value of column $j$ for gene $i$, $o(i)$ — the strain of gene $i$
 - $\mu_{o,j}$ · $\sigma_{o,j}$ — the mean · standard deviation of column $j$ over **all genes** of strain $o$ (including those with unknown labels)
-- Meaning: removes genome-level offsets that differ between strains (e.g. genome-wide GC content), leaving only "how the gene compares relative to others within that strain"
-- Example: if GC content in strain A has mean 0.65 · standard deviation 0.03, a gene with GC 0.71 → $(0.71 - 0.65)/0.03 = 2.0$
 
 The result is stored as fp16.
 
@@ -76,10 +73,9 @@ $$\mathbf{a} = \mathrm{LN}\big(\mathbf{q} + \mathrm{MHA}(\mathbf{q},\ K{=}V{=}\m
 
 - $\mathbf{E}$ — token embeddings `[T, 1152]` (padding positions within the batch are excluded by a mask)
 - $\mathbf{q}$ — one learnable seed vector `[1152]` (initialized as $0.02 \cdot \mathcal{N}(0, 1)$)
-- $\mathrm{MHA}$ — multi-head attention with 8 heads (`N_HEAD`). Since there is only one query, the result is an attention-weighted average of the tokens
+- $\mathrm{MHA}$ — multi-head attention with 8 heads (`N_HEAD`). With a single query, the result is an attention-weighted average of the tokens
 - $\mathrm{LN}$ — LayerNorm. The output $\mathbf{a}$ `[1152]` enters the concatenated vector
-- Example: initially $\mathbf{q}$ is small, so the attention weights are nearly uniform; $\mathbf{a}$ therefore starts close to the token mean and, during training, concentrates weight on important tokens
-- Computation scheme: because the query is a single seed independent of the input, the score of head $h$ is rewritten as $\mathbf{q}_h^\top (W_{k,h}\mathbf{e}_t + \mathbf{b}_{k,h}) = (W_{k,h}^\top \mathbf{q}_h)^\top \mathbf{e}_t + \text{constant}$ and the output as $\sum_t \alpha_t (W_{v,h}\mathbf{e}_t + \mathbf{b}_{v,h}) = W_{v,h}\big(\sum_t \alpha_t \mathbf{e}_t\big) + \big(\sum_t \alpha_t\big)\mathbf{b}_{v,h}$. The constant cancels out in the softmax, so the values are identical to `nn.MultiheadAttention`, and the per-token 1152 → 2304 key · value projection is eliminated
+- Computation scheme — the score of head $h$ is computed as $\mathbf{q}_h^\top (W_{k,h}\mathbf{e}_t + \mathbf{b}_{k,h}) = (W_{k,h}^\top \mathbf{q}_h)^\top \mathbf{e}_t + \text{constant}$ and the output as $\sum_t \alpha_t (W_{v,h}\mathbf{e}_t + \mathbf{b}_{v,h}) = W_{v,h}\big(\sum_t \alpha_t \mathbf{e}_t\big) + \big(\sum_t \alpha_t\big)\mathbf{b}_{v,h}$. The constant cancels out in the softmax, so the values are identical to `nn.MultiheadAttention`
 
 ### 3.2 `seq` — Integer-Encoded Sequence
 
@@ -87,7 +83,7 @@ $$\mathbf{a} = \mathrm{LN}\big(\mathbf{q} + \mathrm{MHA}(\mathbf{q},\ K{=}V{=}\m
 |---|---|
 | Source | `seq_aa` of the base data (protein sequences from Fitness Browser `aaseqs`) |
 | Encoding | 0 = padding, 1 ~ 20 = standard amino acids in the order `ACDEFGHIKLMNPQRSTVWY`, 21 = any character outside the 20 standard ones (X · B · Z · U, etc.) |
-| Length | first `MAX_LEN` = 4,096 residues (same cap as the ESM input) |
+| Length | first `MAX_LEN` = 4,096 residues |
 | Storage | All samples are concatenated into one array `seq_flat`, with boundaries given by `seq_off`. During training the whole array is placed on the GPU, and each batch `[B, L]` is built on the GPU by index slicing (padding 0) |
 
 **Processing inside the model** — `SeqBranch`
@@ -97,7 +93,6 @@ $$\mathbf{s} = \mathrm{PMA}\big(\mathrm{Emb}(x_{1:L}) + \mathbf{P}_{1:L}\big)$$
 - $\mathrm{Emb}$ — embedding of the 22-token vocabulary → 64 dimensions (`SEQ_DIM`) (index 0 = fixed padding vector)
 - $\mathbf{P}$ — learnable positional embedding `[4096, 64]`
 - $\mathrm{PMA}$ — the same pooling as in Section 3.1, with 4 heads (`SEQ_HEAD`). Output $\mathbf{s}$ `[64]`
-- Example: `MKT` → `[11, 9, 17]` → (amino acid vector + position vector) at each position → pooling → one 64-dimensional vector
 
 ---
 
@@ -142,7 +137,7 @@ Before computation, characters other than the 20 standard ones are removed. The 
 | 2 | Molecular weight | `molecular_weight()` (Da) | ÷ 10⁴ |
 | 3 | Isoelectric point | `isoelectric_point()` — Biopython `IsoelectricPoint` module | — |
 | 4 | Aromaticity | `aromaticity()` — Lobry (1994), relative frequency of Phe + Trp + Tyr | — |
-| 5 | Instability index | `instability_index()` — Guruprasad et al. (1990). A value above 40 is regarded as unstable (short half-life) | ÷ 100 |
+| 5 | Instability index | `instability_index()` — Guruprasad et al. (1990) | ÷ 100 |
 | 6 | GRAVY | `gravy()` — mean of the Kyte · Doolittle (1982) hydropathy scale (Grand Average of Hydropathy) | — |
 | 7 | Helix-propensity fraction | `secondary_structure_fraction()[0]` — fraction of E · M · A · L · K | — |
 | 8 | Turn-propensity fraction | `secondary_structure_fraction()[1]` — fraction of N · P · G · S · D | — |
@@ -151,8 +146,8 @@ Before computation, characters other than the 20 standard ones are removed. The 
 | 11 | Molar extinction coefficient (reduced) | `molar_extinction_coefficient()[0]` — assumes all cysteines are in the reduced form | ÷ 10⁴ |
 | 12 | Molar extinction coefficient (oxidized) | `molar_extinction_coefficient()[1]` — assumes cysteines form disulfide bonds (cystine) | ÷ 10⁴ |
 
-- 7 ~ 9 are **structural propensities inferred from amino acid composition, not actual secondary structure**. L is counted in both helix and sheet, so the three values do not sum to 1
-- **Version caveat** — before Biopython 1.82, this method returned the values in the order (sheet, turn, helix) (a fact stated in the 1.82 documentation). The code assumes the order (helix, turn, sheet) via `h, t, e = ...`. **Assumption**: the model training environment was taken to be 1.82 or later. This is because the installation log of the 02 notebook records biopython 1.88; the version in the execution environment of the 03 · 04 notebooks was not checked directly
+- 7 ~ 9 are **structural propensities from amino acid composition**. L is counted in both helix and sheet
+- The code reads the return value in the order (helix, turn, sheet) via `h, t, e = ...`, which requires Biopython 1.82 or later
 - If there are fewer than 5 standard residues, all 72 columns are set to 0 and only column 1 (length) is filled
 
 #### (2) 60 Amino Acid Composition Columns
@@ -162,8 +157,6 @@ Before computation, characters other than the 20 standard ones are removed. The 
 | Overall composition | 20 | $\mathrm{count}_s(a) / \lvert s \rvert$ |
 | N-terminal composition | 20 | $\mathrm{count}_{s[:20]}(a) / \min(20, \lvert s \rvert)$ — first 20 residues |
 | C-terminal composition | 20 | $\mathrm{count}_{s[-20:]}(a) / \min(20, \lvert s \rvert)$ — last 20 residues |
-
-- Example: if the first 20 residues of $s$ contain 1 M and 3 K, the N-terminal composition has M = 0.05, K = 0.15
 
 #### (3) 68 CDS Feature Columns — `seq_dna`
 
@@ -176,7 +169,6 @@ Before computation, characters other than the 20 standard ones are removed. The 
 | GC1 · GC2 · GC3 | 3 | G + C fraction at codon positions 1 · 2 · 3 |
 
 - If there are fewer than 3 codons, all 68 columns are set to 0
-- Example: `ATGGCCTAA` → codons `ATG` · `GCC` · `TAA` at 1/3 each, GC = 4/9, GC1 = 1/3 (G among A · G · T), GC2 = 1/3 (C among T · C · A), GC3 = 2/3 (G · C among G · C · A)
 
 ### 4.4 `ctx` · `ctxp` · `ctxb` — Cross-Strain Context Features (68 columns each)
 
@@ -204,7 +196,7 @@ For a query sample $i$, a **reference strain** is a strain that belongs to none 
 
 Only the best hits from reference strains are sorted by descending cosine, and the top 20 (`max(TOPK)`) are used. The reference protein at rank $r = 1, \dots, 20$ is denoted $J_r$ and its cosine $S_r$. If there are fewer than 20 reference strains, the remaining slots are left invalid.
 
-Because of this rule, the labels of the test · validation genera never enter the input of any sample in that fold. In the final model (no test · validation genus), only the sample's own genus is excluded.
+In the final model (no test · validation genus), only the sample's own genus is excluded.
 
 #### (3) Reference Labels
 
@@ -222,10 +214,8 @@ The within-strain rank is computed separately for each strain, using only genes 
 $$q = \frac{\mathrm{rank} + 0.5}{n_{\mathrm{org}}} \times 2 - 1$$
 
 - $\mathrm{rank}$ — ascending rank within the strain (starting from 0), $n_{\mathrm{org}}$ — the number of genes with numeric fitness values in that strain
-- Example: out of 4,000 genes, the lowest fitness → $q \approx -1.0$, the median → $q \approx 0$, the highest fitness → $q \approx +1.0$
-- Meaning: removes fitness scales that differ between strains (experimental conditions · noise levels), leaving only the relative position
 
-The similarity weight is $w_r = \exp\big(5\,(S_r - 1)\big)$. Example: $S = 1.0 \to 1.00$, $S = 0.8 \to 0.37$, $S = 0.5 \to 0.08$ — the more similar the reference, the more strongly it is weighted.
+The similarity weight is $w_r = \exp\big(5\,(S_r - 1)\big)$.
 
 #### (4) Composition of the 68 Columns
 
@@ -236,7 +226,7 @@ Below, "top $k$" means the valid references at ranks 1 ~ $k$, with $k \in$ `TOPK
 | Column | Computation |
 |---|---|
 | `cons_simtop{k}` (5) | mean of the top $k$ cosines |
-| `cons_gap1_3` | $S_1 - S_3$ — how much rank 1 stands out from rank 3 |
+| `cons_gap1_3` | $S_1 - S_3$ |
 | `cons_gap1_10` | $S_1 - S_{10}$ |
 | `cons_sim_sd` | standard deviation of the top 20 cosines (invalid slots are 0) |
 | `cons_nref` | number of valid references / 20 |
@@ -264,7 +254,7 @@ Below, "top $k$" means the valid references at ranks 1 ~ $k$, with $k \in$ `TOPK
 | `otr_mean{k}` (5) | mean of $q_r$ over the top $k$ |
 | `otr_wmean{k}` (5) | $w_r$-weighted mean of $q_r$ over the top $k$ |
 | `otr_min10` | minimum of $q_r$ over the top 10 |
-| `otr_frac_low20` | number of references in the top 20 with $q_r < -0.5$ (bottom 25% of the strain) / 20 |
+| `otr_frac_low20` | number of references in the top 20 with $q_r < -0.5$ / 20 |
 
 **`rbh_*` — reciprocal best hits only (14 columns)**
 
@@ -287,10 +277,7 @@ Computed from the top 20 within-genome cosines $P_1 \ge \dots \ge P_{20}$ from s
 | `para_gap1_3` · `para_gap1_10` | $P_1 - P_3$ · $P_1 - P_{10}$ |
 | `para_sim_sd` | standard deviation of $P_1, \dots, P_{20}$ |
 
-**Assumption**: the design intent is presumed to rest on the hypothesis that "if there are many similar proteins (paralog candidates), the function may be compensated even when the gene is lost" (an inference; the code does not state a rationale). The **labels** of paralogs are not used, because if the query is a test-genus sample, its paralogs' labels also belong to the test genus.
-
-**Example** — if the top 3 references of the query gene are (cosine 0.92, essential) · (0.85, $f = -2.1$) · (0.60, $f = 0.3$):
-`cons_simtop3` = 0.79, `otf_essfrac3` = 1/3, `otf_mean3` = $(-2.1 + 0.3)/2 = -0.9$, `otf_best_isess` = 1, `otf_best_sim` = 0.92.
+The **labels** of within-genome similar proteins (paralog candidates) are not used.
 
 ---
 
@@ -303,8 +290,6 @@ $$z_{ij} = \frac{x_{ij} - \bar{x}_j^{\,\mathrm{train}}}{s_j^{\,\mathrm{train}} +
 - $\bar{x}_j^{\,\mathrm{train}}$ · $s_j^{\,\mathrm{train}}$ — mean · standard deviation of column $j$ over the training samples (validation · test samples are not used)
 - The final model uses all samples as the reference
 - NaN is replaced with 0, and the result is loaded as an fp16 GPU tensor
-
-Per-strain z-normalization (Section 2.2) uses label-free within-strain statistics, whereas this standardization is a global rescaling redone for every fold.
 
 ---
 

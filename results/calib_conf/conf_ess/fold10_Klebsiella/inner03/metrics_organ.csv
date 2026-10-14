@@ -1,0 +1,2 @@
+org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,mcc_before,f1_before,recall_before,precision_before,accuracy_before,pr_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after,mcc_after,f1_after,recall_after,precision_after,accuracy_after,pr_auc_after
+Koxy,4863,378,0.028317,0.030295,0.166695,0.907312,0.755796,0.773842,0.751323,0.797753,0.965865,0.797827,0.017587,0.027617,0.12074,0.906457,0.755797,0.762918,0.664021,0.896429,0.967921,0.792819

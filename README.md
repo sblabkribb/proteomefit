@@ -25,13 +25,23 @@ Values are the mean ± standard deviation across genera of the per-genus perform
 | `esscls_30` | 0.3 | 0.712 ± 0.078 | 0.936 ± 0.040 | 0.811 ± 0.074 |
 | `esscls_50` | 0.5 | 0.708 ± 0.076 | 0.938 ± 0.040 | 0.820 ± 0.073 |
 
-**Fitness regression** — 28 genera. `_sig` = test-genus genes with |comb_t| ≥ 2, whose measured fitness is distinguishable from 0 (main metric; the same genes for every model); `_all` = all test genes
+**Fitness regression** — 28 genera. `_sig` = test-genus genes with |comb_t| ≥ 2 (main metric); `_all` = all test genes
 
 | Result folder | Dropout | Spearman_sig | CCC_sig | Spearman_all |
 |---|---|---|---|---|
 | `fitpred_10` | 0.1 | 0.381 ± 0.130 | 0.328 ± 0.118 | 0.118 ± 0.056 |
 | `fitpred_30` | 0.3 | 0.380 ± 0.129 | 0.322 ± 0.119 | 0.118 ± 0.055 |
 | `fitpred_50` | 0.5 | 0.375 ± 0.127 | 0.315 ± 0.116 | 0.116 ± 0.053 |
+
+**Confidence calibration** — 28 genera, mean over genera of the per-genus value (`results/calib_conf/compare.csv`). Before = model output as is (`conf_ess`) or the SD read as a normal standard deviation ($\Phi(\lvert\mu\rvert/\sigma)$ for `conf_sign`, 0.683 for `conf_fit`)
+
+| Confidence | ECE (before → after) | Log loss (before → after) | ROC AUC (before → after) |
+|---|---|---|---|
+| `conf_ess` | 0.044 → 0.024 | 0.223 → 0.168 | 0.934 → 0.934 |
+| `conf_sign` | 0.190 → 0.061 | 0.919 → 0.650 | 0.554 → 0.622 |
+| `conf_fit` | 0.140 → 0.067 | 0.726 → 0.610 | 0.500 → 0.706 |
+
+Essential call with calibrated `conf_ess` ≥ 0.5 (raw probability ≥ 0.5 → calibrated): MCC 0.714 → 0.713, precision 0.752 → 0.861, recall 0.747 → 0.645
 
 **Input ablation** — difference in the genus-mean metric relative to the full-input model (classification `esscls_30`, regression `fitpred_10`)
 
@@ -67,7 +77,7 @@ proteomefit/
 │   ├── fitpred_{10,30,50}/       # fitness regression
 │   ├── esscls_ablation/          # 13 classification ablations
 │   ├── fitpred_ablation/         # 13 regression ablations
-│   └── calib_conf/               # fitness-confidence calibration (conf_sign · conf_fit)
+│   └── calib_conf/               # prediction-confidence calibration (conf_ess · conf_sign · conf_fit)
 └── src/
     ├── 01-build_basedata.ipynb   # Fitness Browser -> per-strain base data TSVs
     ├── 02-embed_proteome.ipynb   # ESM C 600M · ProteomeLM-L embedding h5 files
@@ -75,7 +85,7 @@ proteomefit/
     ├── 03-train_fitpred.ipynb    # fitness regression
     ├── 04-ablation_esscls.ipynb  # classification input ablation
     ├── 04-ablation_fitpred.ipynb # regression input ablation
-    ├── 05-calib_conf.ipynb       # calibration of fitness confidences
+    ├── 05-calib_conf.ipynb       # calibration of prediction confidences
     ├── input_features.md         # input feature specification (definitions · formulas · preprocessing)
     └── proteomefit/              # shared modules imported by the notebooks
 ```
@@ -88,7 +98,7 @@ proteomefit/
 | 2 | `02-embed_proteome` | `data/emb_esm_600m.h5` (per token) · `data/emb_esm_600m_mean.h5` (token mean) · `data/emb_proteome_328m.h5` (ProteomeLM `hidden_states[8]`) |
 | 3 | `03-train_esscls` · `03-train_fitpred` | `results/<task>_<dropout>/` — per-fold models · metrics · figures, `metrics_total.csv`, final model |
 | 4 | `04-ablation_*` | `results/<task>_ablation/<ablation>/` · `ablation_summary.csv` |
-| 5 | `05-calib_conf` | `results/calib_conf/calibration.json` — calibrations of the regression mean · SD into `conf_sign` (probability that the measured fitness lies on the predicted side of the strain average) and `conf_fit` (probability that it lies within mean ± SD) — gradient-boosting probability tables fitted on held-out-genus predictions of all genes |
+| 5 | `05-calib_conf` | `results/calib_conf/` — `calibration.json` (probability tables for `conf_ess` · `conf_sign` · `conf_fit`), per-fold and final models, `conf_*/metrics_total.csv`, `compare.csv` |
 
 ### Base data (`data/basedata/`)
 
@@ -122,8 +132,8 @@ For strains not covered by the Fitness Browser file `essential_proteins.tab`, no
 - **Model** — the integer-encoded sequence and the ESM token sequence are each reduced to one vector by Pooling by Multihead Attention (PMA) and concatenated with a fixed-length dataset (ProteomeLM · Biopython · context features), 2,712 dimensions for the full input.
   - Classification: multi-layer perceptron (MLP) `2712 → 640 → 320 → 1`; loss = binary cross-entropy with positive-class weighting and inverse taxon-size sample weights
   - Regression: 1,000 mini-MLPs, each using randomly chosen input blocks and columns (with a per-branch bootstrap); loss = per-branch weighted 1 − concordance correlation coefficient (CCC). The mean of the branch predictions is the prediction and their standard deviation is the uncertainty
-- **Context features** — for each query gene, the most similar protein (ortholog candidate) is found in every strain, and only the labels from strains outside the test, validation and query's own genus are summarized over the top k hits. Labels of the test genus therefore never enter any input of that fold
-- **Evaluation** — outer folds = leave-one-genus-out (28), inner folds = 3 validation genera whose extrapolation distance is similar to that of the test genus. Metrics are computed per strain and averaged. For regression, the main metric uses only genes with |comb_t| ≥ 2, because the measured fitness of the other genes is not distinguishable from 0
+- **Context features** — for each query gene, the most similar protein (ortholog candidate) is found in every strain, and only the labels from strains outside the test, validation and query's own genus are summarized over the top k hits
+- **Evaluation** — outer folds = leave-one-genus-out (28), inner folds = 3 validation genera whose extrapolation distance is similar to that of the test genus. Metrics are computed per strain and averaged. For regression, the main metric uses only genes with |comb_t| ≥ 2
 
 See [`src/input_features.md`](src/input_features.md) for exact feature definitions.
 
@@ -141,12 +151,13 @@ See [`src/input_features.md`](src/input_features.md) for exact feature definitio
 | `train.py` | training loop · losses · sample weights |
 | `tasks.py` | task definitions `EssTask` · `FitTask` (labels · loss · early-stopping metric · evaluation outputs) |
 | `cv.py` | nested cross-validation runner · final model · result summaries |
+| `calib.py` | confidence calibration — cross-validation predictions · gradient-boosting probability tables · nested cross-validation · final model |
 
 ## Running
 
 Run the notebooks with `src/` as the working directory (paths are relative to `../data` and `../results`).
 
-- Notebooks 03 · 04 keep all ESM token embeddings (bf16, ~131–145 GiB) in GPU memory and therefore need a GPU with ~180 GB of VRAM (e.g. NVIDIA B200)
+- Notebooks 03 · 04 keep all ESM token embeddings (bf16, ~131–145 GiB) in GPU memory and therefore need a GPU with ~180 GB of VRAM
 - Main packages: `torch` · `esm` · `proteomelm` · `transformers` · `h5py` · `biopython` · `scikit-learn` · `scipy` · `pandas` · `matplotlib` · `tqdm` · `openpyxl`
 - With `resume=True` (the `Config` default), folds and final models whose outputs already exist are not retrained
 

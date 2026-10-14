@@ -1,4 +1,4 @@
-"""실험 설정 - 03 · 04 노트북이 공유하는 하이퍼파라미터와 torch 전역 설정"""
+"""실험 설정 - 하이퍼파라미터와 torch 전역 설정"""
 from dataclasses import dataclass, field
 import torch
 import torch._dynamo, torch._inductor.config
@@ -6,8 +6,8 @@ import torch._dynamo, torch._inductor.config
 
 @dataclass
 class Config:
-    # 경로 (노트북이 있는 src/ 기준)
-    base_dir: str = '../data/basedata'               # 균주별 base data TSV 폴더 (01 산출물)
+    # 경로 (src/ 기준)
+    base_dir: str = '../data/basedata'               # 균주별 base data TSV 폴더
     prot_h5: str  = '../data/emb_proteome_328m.h5'   # 유전자별 ProteomeLM 임베딩 [n_all, 1152]
     mean_h5: str  = '../data/emb_esm_600m_mean.h5'   # 유전자별 ESM 토큰 평균 [n_all, 1152]
     esm_h5: str   = '../data/emb_esm_600m.h5'        # ESM 토큰별 임베딩 (유전자당 [T, 1152])
@@ -65,5 +65,5 @@ def setup_torch():
     """torch 전역 설정 - TF32 행렬곱 · 동적 모양 컴파일 오류 회피"""
     torch.set_float32_matmul_precision('high')                        # autocast 밖 fp32 행렬곱을 TF32 로
     torch._dynamo.config.cache_size_limit = 64                        # 배치 모양별 컴파일 그래프 수 상한
-    torch._inductor.config.triton.coalesce_tiling_analysis = False    # 동적 모양에서 sympy 검사 오류를 내는 분석 끔
-    torch._inductor.config.shape_padding = False                      # 패딩 보폭 고정으로 인한 역전파 assert_size_stride 오류 회피
+    torch._inductor.config.triton.coalesce_tiling_analysis = False    # 병합 타일링 분석 끔
+    torch._inductor.config.shape_padding = False                      # 모양 패딩 끔

@@ -10,16 +10,16 @@ def genus_order(genus):
 
 
 def nn_sim(sim, g, excl):
-    """genus 유사도 sim [G, G] · genus g · 제외 genus 목록 excl -> g 와 나머지 genus 중 최근접의 유사도 (외삽 거리, 클수록 가까운 친척이 있다)"""
+    """genus 유사도 sim [G, G] · genus g · 제외 genus 목록 excl -> g 와 나머지 genus 중 최근접의 유사도 (외삽 거리, 클수록 가깝다)"""
     pool = [h for h in range(len(sim)) if h != g and h not in excl]
     return float(sim[g, pool].max())
 
 
 def pick_val(k, sim, ok, n_val):
     """외부 폴드 k · genus 유사도 sim [G, G] · 후보 가능 여부 ok [G] · 개수 n_val -> 검증 genus 번호 [n_val]
-       외삽 거리 차이 |nn_sim(v, {k}) - nn_sim(k, {})| 가 작은 순 (예: 시험 0.39 -> 후보 0.41 차이 0.02 가 0.89 차이 0.50 보다 먼저)"""
+       외삽 거리 차이 |nn_sim(v, {k}) - nn_sim(k, {})| 가 작은 순"""
     rest = [g for g in range(len(sim)) if g != k]
-    nn_k = rest[int(np.argmax(sim[k, rest]))]                      # 시험 genus 의 최근접 genus - 훈련 · 문맥 참조에 남긴다
+    nn_k = rest[int(np.argmax(sim[k, rest]))]                      # 시험 genus 의 최근접 genus (검증 후보 제외)
     s_k  = nn_sim(sim, k, [])                                      # 시험 genus 의 외삽 거리
     cand = np.array([v for v in rest if v != nn_k and ok[v]])      # 검증 후보 [m]
     gap  = np.abs([nn_sim(sim, v, [k]) - s_k for v in cand])       # 후보별 외삽 거리 차이 [m]
@@ -55,7 +55,7 @@ def nested_split(S, k, j):
 
 
 def print_splits(S, lab, inner_k, y=None):
-    """분할 요약 출력 + 누출 점검 (출력이 warn 없이 끝나면 정상). y 를 주면 양성 비율도 출력"""
+    """분할 요약 출력 + 누출 점검. y 를 주면 양성 비율도 출력"""
     W = max(len(g) for g in S.GENERA)
     print(f'nested CV: {S.n_fold} outer x {inner_k} inner (genus-level) = {S.n_fold * inner_k:,} trainings / {len(lab):,} samples')
     print(f'val-genus candidates {int(S.VAL_OK.sum())}/{S.n_fold} (excluded: {", ".join(S.GENERA[~S.VAL_OK]) or "none"})\n')

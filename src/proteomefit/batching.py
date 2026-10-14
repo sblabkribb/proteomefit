@@ -27,7 +27,7 @@ def make_batches(smp, lens, max_size, tok_budget, rng=None, pool_mult=50):
 def gather_pad(flat, off, ln, b, lmax, t_align):
     """이어 붙인 GPU 배열 flat [총 길이, ...] · 시작 위치 off [n] · 길이 ln [n] · GPU 샘플 번호 b [B] · 배치 최대 길이 lmax
        -> (배치 [B, L, ...], 패딩 마스크 [B, L] True = 패딩), L = lmax 를 t_align 배수로 올린 값
-       패딩 자리에는 이웃 샘플의 원소가 들어가므로 마스크로 가려 쓴다 (예: off 100 · 길이 3 · L 8 -> 원소 100 ~ 107, 뒤 5칸 마스크)"""
+       패딩 자리에는 이웃 샘플의 원소가 들어가며 마스크로 가린다"""
     L   = -(-lmax // t_align) * t_align
     pos = torch.arange(L, device=flat.device)                              # [L]
     at  = (off[b][:, None] + pos).clamp_(max=len(flat) - 1)                # [B, L] 원소 위치
@@ -52,19 +52,19 @@ class BatchFeeder:
 
     def stream(self, batches):
         """배치 목록 -> (tok [B,T,1152] | None, pad [B,T] | None, seq [B,L] | None, ds [B,d], b [B] GPU 샘플 번호) 생성기"""
-        idx = torch.from_numpy(np.concatenate(batches)).to(self.dev).split([len(bn) for bn in batches])   # 배치별 GPU 샘플 번호 (전송 1회)
+        idx = torch.from_numpy(np.concatenate(batches)).to(self.dev).split([len(bn) for bn in batches])   # 배치별 GPU 샘플 번호
         for bn, b in zip(batches, idx):
             tok = pad = seq = None
             if self.esm is not None:
                 tok, pad = gather_pad(self.esm, self.eoff, self.elen_g, b, int(self.elen[bn].max()), self.t_align)
             if self.sflat is not None:
                 seq, spad = gather_pad(self.sflat, self.soff, self.slen_g, b, int(self.slen[bn].max()), self.t_align)
-                seq = seq.masked_fill(spad, 0).long()                     # 서열 패딩은 0 (SeqBranch 가 0 을 패딩으로 본다)
+                seq = seq.masked_fill(spad, 0).long()                     # 서열 패딩 = 0
             yield tok, pad, seq, self.ds[b], b
 
 
 def make_feeder(D, inputs, device, t_align):
-    """입력 조합 inputs 의 배치 공급기 · 배치 구성용 길이 [n] (ESM 토큰 수 > 서열 길이 > 1 순으로 쓴다)"""
+    """입력 조합 inputs 의 배치 공급기 · 배치 구성용 길이 [n] (ESM 토큰 수 > 서열 길이 > 1 우선)"""
     use_esm, use_seq = 'esm' in inputs, 'seq' in inputs
     lens = D.esm_len if use_esm else D.seq_len if use_seq else np.ones(len(D.lab), np.int64)
     feeder = BatchFeeder(D.esm if use_esm else None, D.esm_off, D.esm_len,
@@ -73,7 +73,7 @@ def make_feeder(D, inputs, device, t_align):
 
 
 def predict(net, feeder, lens, smp, max_size, tok_budget, amp_dtype, reduce=None):
-    """eval 모드 추론 -> smp 순서의 출력 fp32 GPU 텐서 (분류 로짓 [m] / 회귀는 reduce 로 배치마다 줄인 값, 예: [m, 2] = 평균 · 표준편차)"""
+    """eval 모드 추론 -> smp 순서의 출력 fp32 GPU 텐서 (분류 로짓 [m] / 회귀는 reduce 로 배치마다 줄인 값)"""
     bs = make_batches(smp, lens, max_size, tok_budget)
     net.eval(); out = []
     with torch.no_grad(), torch.autocast('cuda', dtype=amp_dtype):

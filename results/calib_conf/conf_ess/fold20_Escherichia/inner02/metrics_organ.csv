@@ -1,0 +1,2 @@
+org_id,n,n_pos,ece_before,brier_before,log_loss_before,roc_auc_before,mcc_before,f1_before,recall_before,precision_before,accuracy_before,pr_auc_before,ece_after,brier_after,log_loss_after,roc_auc_after,mcc_after,f1_after,recall_after,precision_after,accuracy_after,pr_auc_after
+Keio,3909,324,0.045088,0.041114,0.233066,0.93569,0.71389,0.735823,0.820988,0.666667,0.951138,0.805046,0.018758,0.030382,0.125017,0.935508,0.771801,0.790769,0.79321,0.788344,0.965208,0.796763

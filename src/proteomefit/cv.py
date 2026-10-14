@@ -1,4 +1,4 @@
-"""genus 단위 중첩 교차검증 실행 · 최종 모델 · 결과 요약 (03 전체 입력 · 04 ablation 공통)
+"""genus 단위 중첩 교차검증 실행 · 최종 모델 · 결과 요약
 
 산출물 (out_dir 아래)
   fold##_<genus>/inner##/ : task.artifacts (model.pt · history.csv/png · metrics_organ.csv · 그림 · pred.npz)
@@ -93,7 +93,7 @@ def run_cv(task, D, S, cfg, inputs, out_dir, name=''):
         with_stats(inn, {'fold': k + 1, 'genus': G}, 'inner')[0].round(cfg.csv_round).to_csv(
             os.path.join(fdir, 'metrics_folds.csv'), index=False)
 
-        # genus 성능 = 내부 폴드 지표의 평균 · 표준편차 (best epoch 은 중앙값 · 평균 둘 다)
+        # genus 성능 = 내부 폴드 지표의 평균 · 표준편차
         rows_tot.append(dict(fold=k + 1, genus=G, val_genera=';'.join(S.GENERA[S.VAL_G[k]]), n_test=len(te),
                              **task.genus_extra(te), n_org=int(inn.n_org.iloc[0]),
                              best_epoch_med=inn.best_epoch.median(), best_epoch_mean=inn.best_epoch.mean(),
@@ -113,7 +113,7 @@ def run_cv(task, D, S, cfg, inputs, out_dir, name=''):
 
 def train_final(task, D, S, cfg, inputs, out_dir, res, name=''):
     """전체 샘플로 최종 모델 훈련 -> model (산출물이 이미 있고 resume 이면 None)
-       epoch 수 = genus별 best epoch(내부 폴드 중앙값)들의 중앙값을 반올림 (예: genus 값 30 · 33 · 38 · 41 -> 35.5 -> 36)
+       epoch 수 = genus별 best epoch(내부 폴드 중앙값)들의 중앙값을 반올림
        문맥 특성은 자기 genus 만 참조에서 빼고, 표준화 기준은 전체 샘플이다"""
     n_ep = int(res.best_epoch_med.median() + 0.5)
     files = [os.path.join(out_dir, f) for f in ('model_final.pt', 'history_final.csv', 'history_final.png')]

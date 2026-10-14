@@ -2,10 +2,11 @@
 
 EssTask : 필수 유전자 이진 분류 (가중 BCE, 균주 평균 MCC 로 조기 종료)
 FitTask : 적합도 회귀 (미니 MLP 1000개, 가지별 가중 1 - CCC, 균주 평균 Spearman 으로 조기 종료, 주 지표 = 실측이 확실한 샘플)
-두 클래스는 같은 메서드를 가지며 train.train_model · cv.run_cv 가 과제와 무관하게 호출한다.
+두 클래스는 같은 메서드를 가진다 (train.train_model · cv.run_cv 가 호출).
 """
 import numpy as np, pandas as pd, torch, torch.nn as nn
 from .batching import predict
+from .data import ess_labels, fit_labels
 from .folds import both_classes
 from .metrics import (org_masks, mcc_org_mean, ess_metrics_by_organism, in_total, ESS_METRIC_COLS,
                       ccc, sp_org_mean, fit_metrics_by_organism, FIT_METRIC_COLS, SIG_SUF)
@@ -32,12 +33,12 @@ class EssTask:
 
     def __init__(self, D, cfg):
         self.D, self.cfg = D, cfg
-        self.y  = np.isneginf(D.yb[D.keep]).astype(np.int64)        # 라벨 [n] (1 = 필수)
+        self.y  = ess_labels(D)                                      # 라벨 [n] (1 = 필수)
         self.yg = torch.from_numpy(self.y).float().to(cfg.device)   # GPU 라벨 [n]
         self.n  = len(self.y)
 
     def val_candidate(self, smp):
-        """검증 genus 후보 - 검증 샘플에 양·음성이 모두 있는 균주가 하나 이상 (검증 MCC 가 정의되도록)"""
+        """검증 genus 후보 - 검증 샘플에 양·음성이 모두 있는 균주가 하나 이상"""
         return both_classes(self.y[smp], self.D.org[smp])
 
     def build_model(self, inputs, seed):
@@ -55,7 +56,7 @@ class EssTask:
 
     # ---- 훈련 (train.train_model 이 호출)
     def begin(self, tr, sw_full, seed):
-        """손실 준비 - 양성 가중 = 훈련 샘플의 음성 수 / 양성 수 (예: 약 9.8)"""
+        """손실 준비 - 양성 가중 = 훈련 샘플의 음성 수 / 양성 수"""
         p = self.y[tr].sum()
         pw = torch.tensor((len(tr) - p) / max(p, 1), dtype=torch.float32, device=self.cfg.device)
         self.lossf, self.sw = nn.BCEWithLogitsLoss(pos_weight=pw, reduction='none'), sw_full
@@ -138,9 +139,7 @@ class FitTask:
 
     def __init__(self, D, cfg):
         self.D, self.cfg = D, cfg
-        fit = D.yb[D.keep]                                           # 원본 적합도 [n] (log2 비)
-        gf  = pd.Series(fit).groupby(D.org)
-        self.y   = ((fit - gf.transform('mean')) / gf.transform('std')).to_numpy()   # 라벨 = 균주별 z-정규화 [n]
+        self.y   = fit_labels(D)                                     # 라벨 = 균주별 z-정규화 fit_mean [n]
         self.tt  = np.abs(np.nan_to_num(D.ctb[D.keep]))              # |comb_t| [n] (훈련 샘플 가중치)
         self.ext = self.tt >= cfg.t_eval                             # |comb_t| >= 2 [n] (조기 종료 검증 샘플)
         self.yg  = torch.from_numpy(self.y).float().to(cfg.device)

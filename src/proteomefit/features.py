@@ -17,7 +17,7 @@ CTX_SPACE = {'ctx': 'esm', 'ctxp': 'prot', 'ctxb': 'both'}    # 문맥 블록 ->
 def prot_feats(seq_aa):
     """단백질 서열 -> [72]: 물리화학 12 + 조성 20 + N말단 20잔기 조성 20 + C말단 20잔기 조성 20"""
     L = len(seq_aa)
-    s = ''.join(ch for ch in seq_aa if ch in AA_IDX)          # ProtParam 은 표준 20종만 받는다
+    s = ''.join(ch for ch in seq_aa if ch in AA_IDX)          # 표준 20종만 남긴다
     if len(s) < 5:                                            # 너무 짧으면 길이만 채운다
         v = np.zeros(72, np.float32)
         v[0] = np.log1p(L)
@@ -72,7 +72,7 @@ def zscore_per_org(M, org_codes):
 
 def encode_seqs(seqs, max_len):
     """단백질 서열 [n] -> 앞 max_len 잔기의 정수 인코딩을 한 배열에 이어 붙인 (flat [총 잔기 수] int8, off [n + 1], len [n], 원래 길이 [n])
-       0 = 패딩, 1 ~ 20 = 아미노산, 21 = 그 외 (예: 'MKT' -> [11, 9, 17])"""
+       0 = 패딩, 1 ~ 20 = 아미노산, 21 = 그 외"""
     lut = np.zeros(256, np.int8)
     for a, i in AA_IDX.items():
         lut[ord(a)] = i
@@ -248,7 +248,7 @@ def ctx_block(D, S, src, test_genus, val_genus, topk, t_eval):
 
 def build_dataset(D, S, blocks, k, v, ref, topk, t_eval, device):
     """데이터셋 블록 목록 · 시험 genus k · 검증 genus v · 표준화 기준 샘플 ref -> 데이터셋 [n, d] fp16 GPU 텐서
-       예: blocks ['prot', 'bio', 'ctx', 'ctxp', 'ctxb'] -> [n, 1496]. k = v = -1 이면 자기 genus 만 참조에서 뺀다 (최종 모델)"""
+       k = v = -1 이면 자기 genus 만 참조에서 뺀다 (최종 모델)"""
     fixed = {'esm_mean': getattr(D, 'EMEAN', None), 'prot': D.PROT, 'bio': D.BIO}
     M = np.concatenate([fixed[b].astype(np.float32) if b in fixed
                         else ctx_block(D, S, CTX_SPACE[b], k, v, topk, t_eval)[0] for b in blocks], 1)
@@ -258,6 +258,6 @@ def build_dataset(D, S, blocks, k, v, ref, topk, t_eval, device):
 
 
 def block_dims(D, seq_dim, esm_dim=1152):
-    """입력별 연결 벡터 폭 dict (예: {'esm': 1152, 'seq': 64, 'prot': 1152, 'bio': 140, 'ctx': 68, ...})"""
+    """입력별 연결 벡터 폭 dict"""
     return {'esm': esm_dim, 'seq': seq_dim, 'esm_mean': esm_dim, 'prot': D.PROT.shape[1],
             'bio': D.BIO.shape[1], 'ctx': CTX_DIM, 'ctxp': CTX_DIM, 'ctxb': CTX_DIM}
