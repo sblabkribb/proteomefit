@@ -73,8 +73,8 @@ proteomefit/
 ├── results/                      # experiment outputs (final models model_final.pt included; per-fold model.pt excluded)
 │   ├── esscls_{10,30,50}/        # essential gene classification, suffix = dropout x 100
 │   ├── fitpred_{10,30,50}/       # fitness regression
-│   ├── esscls_ablation/          # 13 classification ablations
-│   ├── fitpred_ablation/         # 13 regression ablations
+│   ├── esscls_ablation/          # 14 classification ablations
+│   ├── fitpred_ablation/         # 14 regression ablations
 │   └── conf_fitpred/             # fitness-prediction confidences (conf_sign · conf_fit)
 └── src/
     ├── 01-build_basedata.ipynb   # Fitness Browser -> per-strain base data TSVs
