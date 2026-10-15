@@ -1,2 +1,2 @@
 fold,genus,inner,org_id,n,n_pos,ece,brier,log_loss,roc_auc
-21,Sphingomonas,1,Korea,3360,2111,0.068032,0.214542,0.618945,0.673836
+21,Sphingomonas,1,Korea,3360,2110,0.070008,0.214755,0.61938,0.674859

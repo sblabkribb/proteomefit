@@ -1,2 +1,2 @@
 fold,genus,inner,org_id,n,n_pos,ece,brier,log_loss,roc_auc
-19,Dyella,2,Dyella79,3611,2073,0.043385,0.216549,0.622254,0.695325
+19,Dyella,2,Dyella79,3611,2073,0.045548,0.216866,0.622895,0.694754

@@ -1,2 +1,2 @@
 fold,genus,inner,org_id,n,n_pos,ece,brier,log_loss,roc_auc
-22,Caulobacter,3,Caulo,3305,1363,0.069292,0.209988,0.603961,0.727233
+22,Caulobacter,3,Caulo,3305,1363,0.068143,0.209889,0.603808,0.726873

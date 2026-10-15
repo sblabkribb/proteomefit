@@ -1,2 +1,2 @@
 fold,genus,inner,org_id,n,n_sig,spearman_sig,pearson_sig,ccc_sig,mcc_sig,f1_sig,recall_sig,precision_sig,accuracy_sig,roc_auc_sig,pr_auc_sig,tp_sig,tn_sig,fp_sig,fn_sig,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
-11,Pedobacter,2,Pedo557,4359,345,0.346022,0.254709,0.201725,0.17367,0.333333,0.5,0.25,0.686957,0.647321,0.228955,27,210,81,27,0.098329,0.197271,0.189834,0.090742,0.616017,0.55642,0.689912,0.550126,0.564,0.684127,1573,825,707,1254
+11,Pedobacter,2,Pedo557,4359,345,0.345716,0.254102,0.200522,0.176812,0.335404,0.5,0.252336,0.689855,0.647766,0.229158,27,211,80,27,0.098166,0.197223,0.190136,0.09188,0.61767,0.558896,0.690258,0.551273,0.563915,0.684133,1580,823,709,1247

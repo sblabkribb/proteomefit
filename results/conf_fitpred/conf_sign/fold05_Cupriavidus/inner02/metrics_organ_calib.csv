@@ -1,2 +1,2 @@
 fold,genus,inner,org_id,n,n_pos,ece,brier,log_loss,roc_auc
-5,Cupriavidus,2,Cup4G11,6373,3574,0.042176,0.245712,0.684609,0.549167
+5,Cupriavidus,2,Cup4G11,6373,3575,0.040648,0.24544,0.684053,0.549925

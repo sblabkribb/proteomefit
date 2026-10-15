@@ -1,2 +1,2 @@
 fold,genus,inner,org_id,n,n_pos,ece,brier,log_loss,roc_auc
-12,Azospirillum,1,azobra,4178,2279,0.040276,0.244794,0.683013,0.569768
+12,Azospirillum,1,azobra,4178,2279,0.042238,0.24495,0.683332,0.569503

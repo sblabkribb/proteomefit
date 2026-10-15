@@ -1,2 +1,2 @@
 fold,genus,inner,org_id,n,n_pos,ece,brier,log_loss,roc_auc
-14,Echinicola,3,Cola,3950,2241,0.041142,0.191675,0.568793,0.767387
+14,Echinicola,3,Cola,3950,2241,0.043883,0.192044,0.569631,0.76657

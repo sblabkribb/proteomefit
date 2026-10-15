@@ -1,2 +1,2 @@
 fold,genus,inner,org_id,n,n_pos,ece,brier,log_loss,roc_auc
-8,Paraburkholderia,3,Burk376,5147,3127,0.065871,0.220808,0.633603,0.660083
+8,Paraburkholderia,3,Burk376,5147,3127,0.071764,0.221318,0.634634,0.658903

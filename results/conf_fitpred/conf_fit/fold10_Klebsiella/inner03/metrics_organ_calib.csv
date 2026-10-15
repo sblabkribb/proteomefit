@@ -1,2 +1,2 @@
 fold,genus,inner,org_id,n,n_pos,ece,brier,log_loss,roc_auc
-10,Klebsiella,3,Koxy,4485,2030,0.059937,0.221943,0.633603,0.696073
+10,Klebsiella,3,Koxy,4485,2031,0.0559,0.221389,0.632006,0.696812

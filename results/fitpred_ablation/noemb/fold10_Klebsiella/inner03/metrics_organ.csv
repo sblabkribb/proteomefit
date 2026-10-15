@@ -1,2 +1,2 @@
 fold,genus,inner,org_id,n,n_sig,spearman_sig,pearson_sig,ccc_sig,mcc_sig,f1_sig,recall_sig,precision_sig,accuracy_sig,roc_auc_sig,pr_auc_sig,tp_sig,tn_sig,fp_sig,fn_sig,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
-10,Klebsiella,3,Koxy,4485,252,0.413549,0.437003,0.418944,0.184073,0.461538,0.575342,0.385321,0.611111,0.651412,0.397137,42,112,67,31,0.093009,0.29007,0.286718,0.0638,0.644262,0.69361,0.601469,0.556299,0.545295,0.603982,1802,693,1194,796
+10,Klebsiella,3,Koxy,4485,252,0.416645,0.434407,0.41466,0.171724,0.453039,0.561644,0.37963,0.607143,0.650723,0.385801,41,112,67,32,0.092471,0.28952,0.286703,0.082476,0.649937,0.697844,0.608185,0.564548,0.54454,0.600754,1813,719,1168,785

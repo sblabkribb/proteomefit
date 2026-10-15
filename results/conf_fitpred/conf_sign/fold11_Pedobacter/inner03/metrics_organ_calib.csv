@@ -1,2 +1,2 @@
 fold,genus,inner,org_id,n,n_pos,ece,brier,log_loss,roc_auc
-11,Pedobacter,3,Pedo557,4359,2526,0.052105,0.226505,0.645409,0.660128
+11,Pedobacter,3,Pedo557,4359,2526,0.049144,0.226873,0.646157,0.660429

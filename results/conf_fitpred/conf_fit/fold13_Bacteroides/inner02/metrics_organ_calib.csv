@@ -1,2 +1,2 @@
 fold,genus,inner,org_id,n,n_pos,ece,brier,log_loss,roc_auc
-13,Bacteroides,2,Btheta,4054,2720,0.141722,0.184311,0.55455,0.77288
+13,Bacteroides,2,Btheta,4054,2770,0.141938,0.190458,0.568588,0.737497

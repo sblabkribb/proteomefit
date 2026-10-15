@@ -1,2 +1,2 @@
 fold,genus,inner,org_id,n,n_pos,ece,brier,log_loss,roc_auc
-9,Sinorhizobium,2,Smeli,5130,2514,0.038967,0.21607,0.620168,0.712218
+9,Sinorhizobium,2,Smeli,5130,2514,0.037643,0.216039,0.620048,0.712228

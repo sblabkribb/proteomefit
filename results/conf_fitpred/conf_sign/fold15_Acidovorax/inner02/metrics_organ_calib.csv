@@ -1,2 +1,2 @@
 fold,genus,inner,org_id,n,n_pos,ece,brier,log_loss,roc_auc
-15,Acidovorax,2,acidovorax_3H11,3924,2373,0.023048,0.233299,0.659277,0.585467
+15,Acidovorax,2,acidovorax_3H11,3924,2373,0.030735,0.233003,0.658685,0.587153

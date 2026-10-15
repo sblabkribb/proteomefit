@@ -1,2 +1,2 @@
 fold,genus,inner,org_id,n,n_pos,ece,brier,log_loss,roc_auc
-23,Dinoroseobacter,1,Dino,3185,1695,0.024986,0.222538,0.63463,0.675731
+23,Dinoroseobacter,1,Dino,3185,1693,0.025839,0.223189,0.636149,0.674479

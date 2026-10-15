@@ -1,2 +1,2 @@
 fold,genus,inner,org_id,n,n_pos,ece,brier,log_loss,roc_auc
-20,Escherichia,3,Keio,3585,1978,0.03428,0.240682,0.674256,0.609298
+20,Escherichia,3,Keio,3585,1978,0.033367,0.240038,0.672945,0.610534

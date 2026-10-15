@@ -1,2 +1,2 @@
 fold,genus,inner,org_id,n,n_pos,ece,brier,log_loss,roc_auc
-26,Dechlorosoma,3,PS,2550,1086,0.061672,0.222015,0.631117,0.690461
+26,Dechlorosoma,3,PS,2550,1085,0.058818,0.222431,0.631928,0.688889

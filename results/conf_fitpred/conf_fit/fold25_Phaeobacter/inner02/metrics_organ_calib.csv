@@ -1,2 +1,2 @@
 fold,genus,inner,org_id,n,n_pos,ece,brier,log_loss,roc_auc
-25,Phaeobacter,2,Phaeo,3094,2043,0.087138,0.204944,0.598787,0.68709
+25,Phaeobacter,2,Phaeo,3094,2044,0.08742,0.204522,0.597805,0.689001

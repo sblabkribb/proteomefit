@@ -1,2 +1,2 @@
 fold,genus,inner,org_id,n,n_pos,ece,brier,log_loss,roc_auc
-17,Marinobacter,3,Marino,3648,1925,0.068994,0.24057,0.673944,0.625492
+17,Marinobacter,3,Marino,3648,1925,0.064985,0.240508,0.673829,0.624308

@@ -1,2 +1,2 @@
 fold,genus,inner,org_id,n,n_pos,ece,brier,log_loss,roc_auc
-24,Magnetospirillum,1,Magneto,3155,1507,0.053657,0.228377,0.647117,0.673789
+24,Magnetospirillum,1,Magneto,3155,1507,0.050782,0.228164,0.646675,0.673445

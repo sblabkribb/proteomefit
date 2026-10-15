@@ -1,2 +1,2 @@
 fold,genus,inner,org_id,n,n_sig,spearman_sig,pearson_sig,ccc_sig,mcc_sig,f1_sig,recall_sig,precision_sig,accuracy_sig,roc_auc_sig,pr_auc_sig,tp_sig,tn_sig,fp_sig,fn_sig,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
-19,Dyella,3,Dyella79,3611,204,0.517873,0.429909,0.406644,0.501372,0.61157,0.840909,0.480519,0.769608,0.865057,0.611516,37,120,40,7,0.182713,0.409149,0.404629,0.197928,0.775176,0.843064,0.717407,0.672944,0.61009,0.724921,2036,394,802,379
+19,Dyella,3,Dyella79,3611,204,0.518123,0.429949,0.406725,0.508001,0.616667,0.840909,0.486842,0.77451,0.865199,0.611618,37,121,39,7,0.18275,0.409146,0.404635,0.198793,0.775324,0.843064,0.717659,0.673221,0.610107,0.724921,2036,395,801,379

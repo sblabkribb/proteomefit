@@ -37,24 +37,24 @@ Values are the mean ± standard deviation across genera of the per-genus perform
 
 | Confidence | ECE (before → after) | Log loss (before → after) | ROC AUC (before → after) |
 |---|---|---|---|
-| `conf_sign` | 0.190 → 0.061 | 0.919 → 0.650 | 0.554 → 0.622 |
-| `conf_fit` | 0.140 → 0.067 | 0.726 → 0.610 | 0.500 → 0.706 |
+| `conf_sign` | 0.191 → 0.060 | 0.921 → 0.650 | 0.554 → 0.623 |
+| `conf_fit` | 0.140 → 0.067 | 0.726 → 0.609 | 0.500 → 0.708 |
 
 **Input ablation** — difference in the genus-mean metric relative to the full-input model (classification `esscls_50` with the calibrated `conf_ess` ≥ 0.5 call, regression `fitpred_10`)
 
 | Ablation | Inputs | ΔMCC (classification) | ΔSpearman_sig (regression) |
 |---|---|---|---|
-| `noctx` | seq + esm + prot + bio | −0.035 | −0.079 |
-| `nobio` | seq + esm + prot + ctx × 3 | −0.004 | −0.002 |
+| `noctx` | seq + esm + prot + bio | −0.035 | −0.078 |
+| `nobio` | seq + esm + prot + ctx × 3 | −0.004 | +0.000 |
 | `noesm` | seq + prot + bio + ctx × 3 | +0.000 | −0.004 |
-| `noseq` | esm + prot + bio + ctx × 3 | −0.000 | +0.002 |
-| `noder` | seq + esm + prot | −0.044 | −0.079 |
+| `noseq` | esm + prot + bio + ctx × 3 | −0.000 | +0.003 |
+| `noder` | seq + esm + prot | −0.044 | −0.078 |
 | `noemb` | seq + bio + ctx × 3 | −0.001 | −0.009 |
 | `seq-prot` | seq + prot | −0.055 | −0.116 |
 | `esm-prot` | esm + prot | −0.036 | −0.071 |
 | `prot` | prot | −0.045 | −0.079 |
-| `prot-der` | prot + bio + ctx × 3 | +0.001 | — |
-| `poolesm` | seq + esm_mean + prot + bio + ctx × 3 | −0.005 | −0.003 |
+| `prot-der` | prot + bio + ctx × 3 | +0.001 | −0.000 |
+| `poolesm` | seq + esm_mean + prot + bio + ctx × 3 | −0.005 | −0.004 |
 | `poolesm-noseq` | esm_mean + prot + bio + ctx × 3 | +0.002 | +0.001 |
 | `poolesm-noder` | seq + esm_mean + prot | −0.038 | −0.096 |
 | `poolesm-prot` | esm_mean + prot | −0.030 | −0.081 |

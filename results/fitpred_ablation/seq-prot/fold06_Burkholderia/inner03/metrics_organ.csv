@@ -1,2 +1,2 @@
 fold,genus,inner,org_id,n,n_sig,spearman_sig,pearson_sig,ccc_sig,mcc_sig,f1_sig,recall_sig,precision_sig,accuracy_sig,roc_auc_sig,pr_auc_sig,tp_sig,tn_sig,fp_sig,fn_sig,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
-6,Burkholderia,3,BFirm,5421,292,0.414457,0.40852,0.327316,0.294124,0.570248,0.69,0.485915,0.643836,0.730833,0.528635,69,119,73,31,0.0897,0.1807,0.179791,0.066655,0.622592,0.665568,0.584829,0.548238,0.539459,0.579989,2020,952,1434,1015
+6,Burkholderia,3,BFirm,5421,292,0.413893,0.408172,0.328097,0.28469,0.564315,0.68,0.48227,0.640411,0.730573,0.527432,68,119,73,32,0.089418,0.180517,0.179701,0.065422,0.621509,0.663591,0.584446,0.5475,0.539329,0.579913,2014,954,1432,1021

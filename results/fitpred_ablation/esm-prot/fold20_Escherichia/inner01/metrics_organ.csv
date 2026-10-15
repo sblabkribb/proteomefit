@@ -1,2 +1,2 @@
 fold,genus,inner,org_id,n,n_sig,spearman_sig,pearson_sig,ccc_sig,mcc_sig,f1_sig,recall_sig,precision_sig,accuracy_sig,roc_auc_sig,pr_auc_sig,tp_sig,tn_sig,fp_sig,fn_sig,spearman_all,pearson_all,ccc_all,mcc_all,f1_all,recall_all,precision_all,accuracy_all,roc_auc_all,pr_auc_all,tp_all,tn_all,fp_all,fn_all
-20,Escherichia,1,Keio,3585,197,0.234458,0.227321,0.184209,0.077716,0.310345,0.473684,0.230769,0.593909,0.587057,0.238464,18,99,60,20,0.050658,0.142376,0.138077,0.046435,0.605094,0.599811,0.610471,0.537238,0.524629,0.598933,1271,655,811,848
+20,Escherichia,1,Keio,3585,197,0.23452,0.227342,0.18419,0.077716,0.310345,0.473684,0.230769,0.593909,0.587223,0.238428,18,99,60,20,0.05067,0.142389,0.1381,0.04691,0.605426,0.600283,0.610658,0.537517,0.524637,0.598951,1272,655,811,847

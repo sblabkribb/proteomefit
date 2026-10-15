@@ -1,2 +1,2 @@
 fold,genus,inner,org_id,n,n_pos,ece,brier,log_loss,roc_auc
-6,Burkholderia,2,BFirm,5421,3121,0.072792,0.247739,0.689301,0.543857
+6,Burkholderia,2,BFirm,5421,3028,0.0603,0.246039,0.685647,0.567017

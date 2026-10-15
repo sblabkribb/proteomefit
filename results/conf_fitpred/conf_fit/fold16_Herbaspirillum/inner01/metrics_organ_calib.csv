@@ -1,2 +1,2 @@
 fold,genus,inner,org_id,n,n_pos,ece,brier,log_loss,roc_auc
-16,Herbaspirillum,1,HerbieS,3878,1836,0.052993,0.232386,0.655746,0.656711
+16,Herbaspirillum,1,HerbieS,3878,1836,0.052654,0.232191,0.655337,0.657156
