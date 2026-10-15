@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc,ece,brier,log_loss
+19,Dyella,2,Dyella79,3982,371,253,3562,49,118,0.733822,0.751857,0.681941,0.837748,0.958061,0.947691,0.811109,0.016909,0.034227,0.1342

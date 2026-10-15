@@ -1,0 +1,7 @@
+fold,genus,inner,val_genus,val_sim,val_nn,n_val,n_org,best_epoch,val_mcc,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc,tp_sd,tn_sd,fp_sd,fn_sd,mcc_sd,f1_sd,recall_sd,precision_sd,accuracy_sd,roc_auc_sd,pr_auc_sd,ece,brier,log_loss,ece_sd,brier_sd,log_loss_sd
+25,Magnetospirillum,1,Dickeya,-0.321397,0.761534,35610.0,0.0,299.0,0.793818,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+25,Magnetospirillum,2,Ralstonia,-0.105423,0.68916,49353.0,0.0,264.0,0.781848,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+25,Magnetospirillum,3,Cupriavidus,-0.127514,0.68916,20541.0,0.0,241.0,0.790509,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+25,Magnetospirillum,mean,,-0.184778,0.713285,35168.0,0.0,268.0,0.788725,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+25,Magnetospirillum,median,,-0.127514,0.68916,35610.0,0.0,264.0,0.790509,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+25,Magnetospirillum,std,,0.11883,0.041785,14411.084588,0.0,29.206164,0.006181,,,,,,,,,,,,,,,,,,,,,,,,,,,,

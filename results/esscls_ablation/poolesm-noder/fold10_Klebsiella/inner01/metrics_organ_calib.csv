@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc,ece,brier,log_loss
+10,Klebsiella,1,Koxy,4863,378,272,4429,56,106,0.754878,0.770538,0.719577,0.829268,0.966687,0.909118,0.787117,0.010974,0.028773,0.123218

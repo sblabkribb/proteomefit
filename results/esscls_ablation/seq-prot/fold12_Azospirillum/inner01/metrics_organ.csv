@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc
+12,Azospirillum,1,azobra,4518,340,239,4009,169,101,0.609751,0.639037,0.702941,0.585784,0.940239,0.903761,0.714775

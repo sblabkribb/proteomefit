@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc,ece,brier,log_loss
+24,Phaeobacter,1,Phaeo,3632,538,390,3048,46,148,0.776046,0.800821,0.724907,0.894495,0.946586,0.961959,0.889825,0.022235,0.041213,0.154869

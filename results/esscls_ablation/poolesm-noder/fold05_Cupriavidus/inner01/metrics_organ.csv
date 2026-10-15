@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc
+5,Cupriavidus,1,Cup4G11,6847,474,386,6101,272,88,0.664611,0.681979,0.814346,0.586626,0.947422,0.954008,0.816725

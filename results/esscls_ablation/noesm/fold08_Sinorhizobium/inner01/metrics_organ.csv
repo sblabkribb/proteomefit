@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc
+8,Sinorhizobium,1,Smeli,5689,559,370,4962,168,189,0.64,0.674567,0.661896,0.687732,0.937247,0.91744,0.73222

@@ -70,14 +70,14 @@ def run_cv(task, D, S, cfg, inputs, out_dir, name=''):
             cached = cfg.resume and fold_done(jd, task.artifacts)
             if cached:
                 h = pd.read_csv(P['history.csv'])
-                om, extra = task.load_cached(P)
+                om = task.load_cached(P)
                 bep = int(h.epoch[h.is_best].iloc[0]) if h.is_best.any() else 0
             else:
                 feeder.set_dataset(None)                        # 이전 데이터셋을 먼저 해제
                 feeder.set_dataset(build_dataset(D, S, blocks, k, v, idx['train'], cfg.topk, cfg.t_eval, cfg.device))
                 model, net, h, bep = train_model(task, inputs, feeder, lens, idx, cfg.seed + j,
                                                  f'{pre}{jtag:<{tagw}}', cfg, task.sample_weight(idx['train']))
-                om, extra = task.evaluate(task.predict(net, feeder, lens, te), te, P,
+                om = task.evaluate(task.predict(net, feeder, lens, te), te, P,
                                           f'{pre}fold{k+1:02d} {G} {jtag} (val {S.GENERA[v]})')
                 om.insert(0, 'fold', k + 1); om.insert(1, 'genus', G); om.insert(2, 'inner', j + 1)
                 torch.save(model.state_dict(), P['model.pt'])
@@ -88,7 +88,7 @@ def run_cv(task, D, S, cfg, inputs, out_dir, name=''):
                 if cfg.device != 'cpu':
                     torch.cuda.empty_cache()
 
-            n_org, rest = task.fold_row(om, extra)
+            n_org, rest = task.fold_row(om)
             r = dict(fold=k + 1, genus=G, inner=j + 1, val_genus=S.GENERA[v], val_sim=S.GSIM[k, v],
                      val_nn=nn_sim(S.GSIM, v, [k]), n_val=len(idx['val']), n_org=n_org, best_epoch=bep,
                      **{f'val_{sc}': float(h[f'vl_{sc}'].iloc[bep - 1]) if bep else np.nan}, **rest)

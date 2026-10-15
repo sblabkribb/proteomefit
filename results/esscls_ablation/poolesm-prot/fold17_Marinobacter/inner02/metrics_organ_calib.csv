@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc,ece,brier,log_loss
+17,Marinobacter,2,Marino,4203,555,338,3595,53,217,0.692862,0.714588,0.609009,0.86445,0.93576,0.932872,0.812391,0.019481,0.049724,0.183175

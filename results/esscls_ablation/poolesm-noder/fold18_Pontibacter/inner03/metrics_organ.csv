@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc
+18,Pontibacter,3,Ponti,4115,472,397,3377,266,75,0.66576,0.699559,0.841102,0.598793,0.917132,0.951626,0.808129

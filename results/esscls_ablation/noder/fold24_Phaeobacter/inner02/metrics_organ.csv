@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc
+24,Phaeobacter,2,Phaeo,3632,538,440,2956,138,98,0.750876,0.78853,0.817844,0.761246,0.935022,0.956992,0.871168

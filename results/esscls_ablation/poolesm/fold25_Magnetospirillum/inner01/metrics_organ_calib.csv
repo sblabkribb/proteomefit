@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc,ece,brier,log_loss
+25,Magnetospirillum,1,Magneto,3155,0,0,3127,28,0,,,,,0.991125,,,0.043981,0.009051,0.053478

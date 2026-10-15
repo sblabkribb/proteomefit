@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc,ece,brier,log_loss
+27,Synechococcus,1,SynE,2512,614,147,1892,6,467,0.424521,0.383312,0.239414,0.960784,0.811704,0.799401,0.671576,0.14087,0.155845,0.540051

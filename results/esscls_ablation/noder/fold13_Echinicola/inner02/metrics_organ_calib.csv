@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc,ece,brier,log_loss
+13,Echinicola,2,Cola,4442,492,375,3851,99,117,0.749292,0.776398,0.762195,0.791139,0.951373,0.96239,0.845727,0.022346,0.037641,0.138713

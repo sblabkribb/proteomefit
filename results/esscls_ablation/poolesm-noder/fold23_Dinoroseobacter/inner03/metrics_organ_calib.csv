@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc,ece,brier,log_loss
+23,Dinoroseobacter,3,Dino,3720,535,351,3131,54,184,0.720021,0.746809,0.656075,0.866667,0.936022,0.939522,0.834854,0.015972,0.050114,0.182542

@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc
+7,Burkholderia,1,BFirm,5830,409,230,5286,135,179,0.566622,0.594315,0.562347,0.630137,0.946141,0.865474,0.606948

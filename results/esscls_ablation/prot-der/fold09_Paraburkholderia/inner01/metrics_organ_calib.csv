@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc,ece,brier,log_loss
+9,Paraburkholderia,1,Burk376,5147,0,0,5114,33,0,,,,,0.993588,,,0.036841,0.006757,0.043269

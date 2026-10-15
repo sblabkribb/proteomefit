@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc,ece,brier,log_loss
+11,Pedobacter,2,Pedo557,4837,478,273,4328,31,205,0.693539,0.69821,0.57113,0.898026,0.951209,0.953169,0.810403,0.017241,0.037373,0.139095

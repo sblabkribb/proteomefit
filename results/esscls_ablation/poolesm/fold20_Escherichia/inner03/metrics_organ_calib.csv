@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc,ece,brier,log_loss
+20,Escherichia,3,Keio,3909,324,252,3542,43,72,0.799315,0.814216,0.777778,0.854237,0.970581,0.942203,0.829335,0.024423,0.026997,0.114023

@@ -90,17 +90,17 @@ class EssTask:
 
     # ---- 평가 · 결과 표 (cv.run_cv 가 호출)
     def evaluate(self, raw, te, P, title):
-        """테스트 로짓 [n_test] -> (균주별 지표 DataFrame, 추가 값 dict). pred.npz 저장 (혼동행렬은 calib.nested_cv)"""
+        """테스트 로짓 [n_test] -> 균주별 지표 DataFrame. pred.npz 저장 (혼동행렬은 calib.nested_cv)"""
         pb = torch.sigmoid(raw).cpu().numpy()                       # 양성 확률 [n_test]
         yt, th = self.y[te], self.cfg.thresh
         om = ess_metrics_by_organism(self.D.org[te], yt, pb, th)
         np.savez(P['pred.npz'], prob=pb)                            # [n_test] - 테스트 genus 샘플 순
-        return om, {}
+        return om
 
     def load_cached(self, P):
-        return pd.read_csv(P['metrics_organ.csv']), {}
+        return pd.read_csv(P['metrics_organ.csv'])
 
-    def fold_row(self, om, extra):
+    def fold_row(self, om):
         """균주별 지표 -> (지표가 계산된 균주 수, 균주 평균 · 표준편차 dict) - 양·음성이 모두 있는 균주만"""
         tot = om[in_total(om)]
         return len(tot), org_summary(tot, ESS_METRIC_COLS)
@@ -214,12 +214,12 @@ class FitTask:
         sign_confusion_plot([(f'{nm_sig}\nMCC {om["mcc" + SIG_SUF].mean():.3f}', yt[sel], mu[sel]),
                              (f'{nm_all}\nMCC {om.mcc_all.mean():.3f}', yt, mu)], P['confusion.png'], title, self.classes)
         np.savez(P['pred.npz'], mu=mu, sd=sd)
-        return om, {}
+        return om
 
     def load_cached(self, P):
-        return pd.read_csv(P['metrics_organ.csv']), {}
+        return pd.read_csv(P['metrics_organ.csv'])
 
-    def fold_row(self, om, extra):
+    def fold_row(self, om):
         """균주별 지표 -> (주 지표가 계산된 균주 수, 균주 평균 · 표준편차 dict, n_sig 은 균주 합)"""
         rest = org_summary(om, FIT_METRIC_COLS)
         rest['n' + SIG_SUF] = int(om['n' + SIG_SUF].sum())
@@ -239,7 +239,3 @@ class FitTask:
         return (f'| Sp_sig={pm("spearman_sig")} MCC_sig={pm("mcc_sig")} '
                 f'| Sp_all={pm("spearman_all")} MCC_all={pm("mcc_all")}')
 
-    def predict_table(self, net, feeder, lens, smp):
-        """데이터셋이 준비된 샘플 번호 smp [m] -> DataFrame [m, 4] (gene_id, org_id, mu, sd)"""
-        mu, sd = self.predict(net, feeder, lens, smp)
-        return pd.DataFrame({'gene_id': self.D.lab.gene_id.to_numpy()[smp], 'org_id': self.D.org[smp], 'mu': mu, 'sd': sd})

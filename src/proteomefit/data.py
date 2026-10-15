@@ -5,25 +5,6 @@ import h5py, numpy as np, pandas as pd, torch
 from tqdm import tqdm
 
 
-def split_basedata(tsv, out_dir):
-    """통합 TSV -> 균주별 TSV '순번_org_id.tsv' (행 · 문자열 그대로, 순번 = TSV 등장 순서), 반환 = 파일 수"""
-    os.makedirs(out_dir, exist_ok=True)
-    out, cur, i = None, None, 0
-    with open(tsv, encoding='utf-8', newline='') as f:
-        header = f.readline()
-        for line in f:
-            o = line.split('\t', 1)[0]                                  # 첫 열 = org_id
-            if o != cur:                                                # 균주가 바뀌면 새 파일
-                if out:
-                    out.close()
-                i, cur = i + 1, o
-                out = open(os.path.join(out_dir, f'{i:02d}_{o}.tsv'), 'w', encoding='utf-8', newline='')
-                out.write(header)
-            out.write(line)
-    out.close()
-    return i
-
-
 ID_DTYPE = {'org_id': str, 'org_name': str, 'gene_id': str, 'gene_name': str}   # ID 열은 문자열
 
 

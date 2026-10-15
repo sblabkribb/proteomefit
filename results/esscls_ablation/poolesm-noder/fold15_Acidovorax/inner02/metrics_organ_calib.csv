@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc,ece,brier,log_loss
+15,Acidovorax,2,acidovorax_3H11,4428,504,255,3894,30,249,0.644907,0.646388,0.505952,0.894737,0.936992,0.925966,0.782444,0.021846,0.048363,0.177312

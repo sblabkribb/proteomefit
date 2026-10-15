@@ -1,0 +1,2 @@
+fold,genus,inner,org_id,n,n_pos,tp,tn,fp,fn,mcc,f1,recall,precision,accuracy,roc_auc,pr_auc,ece,brier,log_loss
+7,Burkholderia,3,BFirm,5830,409,182,5381,40,227,0.583992,0.576862,0.444988,0.81982,0.954202,0.857117,0.610772,0.022074,0.039122,0.166721
