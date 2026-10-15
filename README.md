@@ -11,7 +11,7 @@ Generalization to unseen genera is evaluated with genus-level nested cross-valid
 > [!TIP]
 > **Try it online: [https://proteomefit.duckdns.org](https://proteomefit.duckdns.org)**
 >
-> Upload the genes of one bacterial strain (GenBank, CDS FASTA or complete-genome FASTA) and get, for every gene, an essentiality call and, for non-essential genes, the predicted knockout fitness (within-strain z-score) with its uncertainty, as a downloadable CSV. The service runs the final models of the `nobio` classification ablation and the `noseq` regression ablation (`results/fitpred_ablation/noseq`). Uploaded files and results are not stored on the server.
+> Upload the genes of one bacterial strain (GenBank, CDS FASTA or complete-genome FASTA) and get, for every gene, an essentiality call and, for non-essential genes, the predicted knockout fitness (within-strain z-score) with its uncertainty, as a downloadable CSV. The service runs the final models of the `poolesm-noseq` classification ablation (`results/esscls_ablation/poolesm-noseq`) and the `noseq` regression ablation (`results/fitpred_ablation/noseq`). Uploaded files and results are not stored on the server.
 
 ## Main results
 
@@ -40,26 +40,27 @@ Values are the mean ± standard deviation across genera of the per-genus perform
 | `conf_sign` | 0.190 → 0.061 | 0.919 → 0.650 | 0.554 → 0.622 |
 | `conf_fit` | 0.140 → 0.067 | 0.726 → 0.610 | 0.500 → 0.706 |
 
-**Input ablation** — difference in the genus-mean Spearman_sig relative to the full-input regression model `fitpred_10`
+**Input ablation** — difference in the genus-mean metric relative to the full-input model (classification `esscls_50` with the calibrated `conf_ess` ≥ 0.5 call, regression `fitpred_10`)
 
-| Ablation | Inputs | ΔSpearman_sig (regression) |
-|---|---|---|
-| `noctx` | seq + esm + prot + bio | −0.079 |
-| `nobio` | seq + esm + prot + ctx × 3 | −0.002 |
-| `noesm` | seq + prot + bio + ctx × 3 | −0.004 |
-| `noseq` | esm + prot + bio + ctx × 3 | +0.002 |
-| `noder` | seq + esm + prot | −0.079 |
-| `noemb` | seq + bio + ctx × 3 | −0.009 |
-| `seq-prot` | seq + prot | −0.116 |
-| `esm-prot` | esm + prot | −0.071 |
-| `prot` | prot | −0.079 |
-| `poolesm` | seq + esm_mean + prot + bio + ctx × 3 | −0.003 |
-| `poolesm-noseq` | esm_mean + prot + bio + ctx × 3 | +0.001 |
-| `poolesm-noder` | seq + esm_mean + prot | −0.096 |
-| `poolesm-prot` | esm_mean + prot | −0.081 |
+| Ablation | Inputs | ΔMCC (classification) | ΔSpearman_sig (regression) |
+|---|---|---|---|
+| `noctx` | seq + esm + prot + bio | −0.035 | −0.079 |
+| `nobio` | seq + esm + prot + ctx × 3 | −0.004 | −0.002 |
+| `noesm` | seq + prot + bio + ctx × 3 | +0.000 | −0.004 |
+| `noseq` | esm + prot + bio + ctx × 3 | −0.000 | +0.002 |
+| `noder` | seq + esm + prot | −0.044 | −0.079 |
+| `noemb` | seq + bio + ctx × 3 | −0.001 | −0.009 |
+| `seq-prot` | seq + prot | −0.055 | −0.116 |
+| `esm-prot` | esm + prot | −0.036 | −0.071 |
+| `prot` | prot | −0.045 | −0.079 |
+| `prot-der` | prot + bio + ctx × 3 | +0.001 | — |
+| `poolesm` | seq + esm_mean + prot + bio + ctx × 3 | −0.005 | −0.003 |
+| `poolesm-noseq` | esm_mean + prot + bio + ctx × 3 | +0.002 | +0.001 |
+| `poolesm-noder` | seq + esm_mean + prot | −0.038 | −0.096 |
+| `poolesm-prot` | esm_mean + prot | −0.030 | −0.081 |
 
 seq = integer-encoded sequence, esm = ESM per-token embeddings, esm_mean = mean of ESM token embeddings, prot = ProteomeLM embedding, bio = Biopython features, ctx × 3 = the three context-feature blocks.
-Full table: `results/fitpred_ablation/ablation_summary.csv`.
+Full tables: `results/esscls_ablation/ablation_summary_calib.csv` · `results/fitpred_ablation/ablation_summary.csv`.
 
 ## Repository layout
 
