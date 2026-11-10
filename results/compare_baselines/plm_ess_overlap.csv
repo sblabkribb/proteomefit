@@ -1,0 +1,39 @@
+taxid,organism,fasta_file,proteins,E,NE,role,genus
+294,Pseudomonas fluorescens,othersource_data_taxid294.fasta,5866,396,0,cross-validation,Pseudomonas
+883,Nitratidesulfovibrio vulgaris str. 'Miyazaki F',uniprotkb_data_taxid883.fasta,3188,303,0,cross-validation,Desulfovibrio
+1140,Synechococcus elongatus PCC 7942 = FACHB-805,uniprotkb_data_taxid1140.fasta,2657,613,76,cross-validation,Synechococcus
+68895,Cupriavidus basilensis,uniprotkb_data_taxid68895.fasta,7643,468,0,cross-validation,Cupriavidus
+83333,Escherichia coli K-12,uniprotkb_data_taxid83333.fasta,4361,290,3969,held out (Fig. 5B),Escherichia
+93064,Sphingomonas koreensis,othersource_data_taxid93064.fasta,4118,443,0,cross-validation,Sphingomonas
+94122,Shewanella sp. ANA-3,uniprotkb_data_taxid94122.fasta,4341,305,0,cross-validation,Shewanella
+199310,Escherichia coli CFT073,uniprotkb_data_taxid199310.fasta,5336,232,0,excluded,Escherichia
+208963,Pseudomonas aeruginosa UCBPP-PA14,ncbi_data_taxid208963.fasta,5886,1684,4064,cross-validation,Pseudomonas
+208964,Pseudomonas aeruginosa PAO1,uniprotkb_data_taxid208964.fasta,5562,453,5106,cross-validation,Pseudomonas
+211586,Shewanella oneidensis MR-1,uniprotkb_data_taxid211586.fasta,4068,487,1836,cross-validation,Shewanella
+216591,Burkholderia cenocepacia J2315,uniprotkb_data_taxid216591.fasta,6993,160,3095,cross-validation,Burkholderia
+225937,Marinobacter adhaerens HP15,uniprotkb_data_taxid225937.fasta,4407,550,0,cross-validation,Marinobacter
+226186,Bacteroides thetaiotaomicron VPI-5482,uniprotkb_data_taxid226186.fasta,4782,325,0,cross-validation,Bacteroides
+266834,Sinorhizobium meliloti 1021,uniprotkb_data_taxid266834.fasta,6168,556,0,cross-validation,Sinorhizobium
+271848,Burkholderia thailandensis E264,ncbi_data_taxid271848.fasta,5607,396,0,cross-validation,Burkholderia
+272560,Burkholderia pseudomallei K96243,uniprotkb_data_taxid272560.fasta,5717,500,0,cross-validation,Burkholderia
+290336,Klebsiella michiganensis M5al,othersource_data_taxid290336.fasta,5306,378,0,cross-validation,Klebsiella
+321846,Pseudomonas simiae,othersource_data_taxid321846.fasta,5506,473,0,cross-validation,Pseudomonas
+323850,Shewanella loihica PV-4,uniprotkb_data_taxid323850.fasta,3855,286,0,cross-validation,Shewanella
+326297,Shewanella amazonensis SB2B,uniprotkb_data_taxid326297.fasta,3638,390,0,cross-validation,Shewanella
+398527,Paraburkholderia phytofirmans PsJN,uniprotkb_data_taxid398527.fasta,7197,405,0,cross-validation,Paraburkholderia
+398580,Dinoroseobacter shibae DFL 12 = DSM 16493,uniprotkb_data_taxid398580.fasta,4086,528,0,cross-validation,Dinoroseobacter
+565050,Caulobacter vibrioides NA1000,uniprotkb_data_taxid565050.fasta,3859,544,3078,cross-validation,Caulobacter
+640081,Azospira oryzae PS,uniprotkb_data_taxid640081.fasta,3432,485,0,cross-validation,Dechlorosoma
+644801,Stutzerimonas stutzeri RCH2,uniprotkb_data_taxid644801.fasta,4234,427,0,cross-validation,Pseudomonas
+679895,Escherichia coli BW25113,othersource_data_taxid679895.fasta,4192,313,0,excluded,Escherichia
+709015,Pontibacter actiniarum DSM 19842,othersource_data_taxid709015.fasta,4220,472,0,cross-validation,Pontibacter
+757424,Herbaspirillum seropedicae SmR1,uniprotkb_data_taxid757424.fasta,4732,466,0,cross-validation,Herbaspirillum
+862962,Bacteroides fragilis 638R,uniprotkb_data_taxid862962.fasta,4284,544,0,cross-validation,Bacteroides
+926556,Echinicola vietnamensis DSM 17526,uniprotkb_data_taxid926556.fasta,4509,491,0,cross-validation,Echinicola
+941322,Escherichia coli O25b:H4-ST131,ncbi_data_taxid941322.fasta,4821,294,4023,excluded,Escherichia
+1064539,Azospirillum baldaniorum,ncbi_data_taxid1064539.fasta,6720,142,0,cross-validation,Azospirillum
+1122134,Kangiella aquimarina DSM 16071,othersource_data_taxid1122134.fasta,2467,399,0,cross-validation,Kangiella
+1380365,Dyella japonica UNC79MFTsu3.2,othersource_data_taxid1380365.fasta,4374,0,0,excluded,Dyella
+1423144,Phaeobacter gallaeciensis DSM 26640,ncbi_data_taxid1423144.fasta,4286,267,0,cross-validation,Phaeobacter
+1813946,Acidovorax sp. GW101-3H11,uniprotkb_data_taxid1813946.fasta,4741,499,0,cross-validation,Acidovorax
+1986952,Sphingobacteriaceae bacterium GW460-11-11-14-LB5,uniprotkb_data_taxid1986952.fasta,4946,477,0,cross-validation,Pedobacter

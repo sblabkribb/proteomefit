@@ -84,6 +84,8 @@ proteomefit/
     ├── 04-ablation_esscls.ipynb  # classification input ablation
     ├── 04-ablation_fitpred.ipynb # regression input ablation
     ├── 05-conf_fitpred.ipynb     # fitness-prediction confidences
+    ├── 06-compare_baselines.ipynb # baselines Geptop 2.0 and ProteomeLM-ess (same genus-level CV)
+    ├── 07-fitstat_essfn.ipynb    # predicted fitness of essential genes missed by the classifier
     ├── input_features.md         # input feature specification (definitions · formulas · preprocessing)
     └── proteomefit/              # shared modules imported by the notebooks
 ```
@@ -97,6 +99,8 @@ proteomefit/
 | 3 | `03-train_esscls` · `03-train_fitpred` | `results/<task>_<dropout>/` — per-fold models · metrics · figures, `metrics_total.csv`, final model; classification also `*_calib` files (`conf_ess` calibration: per-fold and final calibration models, `metrics_total_calib.csv`, `compare_calib.csv`, `calibration.json`) |
 | 4 | `04-ablation_*` | `results/<task>_ablation/<ablation>/` · `ablation_summary.csv` (classification also `ablation_summary_calib.csv`) |
 | 5 | `05-conf_fitpred` | `results/conf_fitpred/` — `calibration.json` (probability tables for `conf_sign` · `conf_fit`), `conf_*/` per-fold and final models · `metrics_total_calib.csv` · `compare_calib.csv` |
+| 6 | `06-compare_baselines` | `results/compare_baselines/` — Geptop 2.0 and ProteomeLM-ess per-gene scores · per-strain and per-genus metrics · `plm_ess_overlap.csv` · `compare.csv` (vs ProteomeFit). Needs NCBI BLAST+; no GPU, about 11 h on 16 CPU cores (BLAST of 1,948 strain pairs) |
+| 7 | `07-fitstat_essfn` | `results/fitstat_essfn/` — per-fold fitness models applied to all samples including essential genes; predicted fitness of essential genes missed by the classifier (FN) vs correctly called non-essential genes (TN) (`pred_all.tsv` · `check.csv` · `stats.csv` · `hist_genus.png` · `hist_all.png` · `box_genus.png`) |
 
 ### Base data (`data/basedata/`)
 

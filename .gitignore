@@ -21,3 +21,8 @@ results/**/*.pkl
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
+
+# 대용량 중간 파일 - 노트북이 다시 만든다
+results/fitstat_essfn/work/bio_all.npy
+results/fitstat_essfn/work/ortho.npz
+results/compare_baselines/work/

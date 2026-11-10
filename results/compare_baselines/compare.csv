@@ -1,0 +1,7 @@
+subset,,mcc,roc_auc,pr_auc,n_genus,p_mcc,p_roc_auc,p_pr_auc
+unseen genera,ProteomeFit,0.771 ± 0.022,0.949 ± 0.009,0.843 ± 0.030,4,,,
+unseen genera,Geptop 2.0,0.718 ± 0.044,0.924 ± 0.011,0.806 ± 0.024,4,,,
+unseen genera,ProteomeLM-ess,0.590 ± 0.093,0.887 ± 0.016,0.636 ± 0.105,4,,,
+all genera,ProteomeFit,0.725 ± 0.088,0.936 ± 0.041,0.816 ± 0.072,26,,,
+all genera,Geptop 2.0,0.692 ± 0.062,0.917 ± 0.039,0.789 ± 0.067,26,7.9e-03,5.2e-05,7.5e-04
+all genera,ProteomeLM-ess,0.519 ± 0.118,0.888 ± 0.037,0.593 ± 0.131,26,7.5e-07,5.2e-05,2.1e-07

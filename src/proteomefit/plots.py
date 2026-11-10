@@ -75,10 +75,11 @@ def sign_confusion_plot(sets, path, title, classes):
     fig.tight_layout(rect=[0, 0, 1, .92]); fig.savefig(path, dpi=140); plt.close(fig)
 
 
-def reliability_plot(tables, path, title='', notes=None):
-    """{신뢰도 이름: metrics.reliability_table 결과} · 저장 경로 · 제목 · {신뢰도 이름: {단계: 지표 줄}} -> 보정 그림
+def reliability_plot(tables, path, title='', notes=None, bins=np.linspace(0, 1, 11)):
+    """{신뢰도 이름: metrics.reliability_table 결과} · 저장 경로 · 제목 · {신뢰도 이름: {단계: 지표 줄}} · 확률 구간 경계 -> 보정 그림
        신뢰도 1개 = [1, 2] (보정 전 | 후), 여러 개 = [2, 신뢰도 수] (위 행 = 보정 전, 아래 행 = 보정 후)
-       구간마다 원 하나 - 가로 = 실제 비율, 세로 = 예측 확률, 원 넓이 = 구간 예측 수 / 전체 예측 수 (최소 4 pt^2)
+       구간마다 원 하나 - 가로 = 구간 예측 확률 평균, 세로 = 실제 비율 (관례), 회색 격자 = 구간 경계 (bins),
+       원 넓이 = 구간 예측 수 / 전체 예측 수 (최소 4 pt^2). 대각선 아래 = 과대 예측, 위 = 과소 예측
        패널 제목 아래 줄 = notes 의 지표, 대제목 아래 줄 = 전체 n, 그림 아래 = 원 크기 범례 (n) 한 줄"""
     n = len(tables)
     N = next(iter(tables.values())).query("stage == 'after'").n.sum()        # 전체 예측 수 (패널 공통)
@@ -87,17 +88,21 @@ def reliability_plot(tables, path, title='', notes=None):
     for c, (name, T) in enumerate(tables.items()):
         for r, stage in enumerate(('before', 'after')):
             ax, t = (axes[0, r] if n == 1 else axes[r, c]), T[T.stage == stage]
-            ax.scatter(t.observed, t.predicted, s=size(t.n), color=f'C{r}', edgecolor='white', zorder=3)   # C0 = 보정 전, C1 = 보정 후
+            ax.scatter(t.predicted, t.observed, s=size(t.n), color=f'C{r}', edgecolor='white', zorder=3)   # C0 = 보정 전, C1 = 보정 후
             ax.plot([0, 1], [0, 1], 'k--', lw=1)
-            ax.set_xlim(0, 1); ax.set_ylim(0, 1); ax.set_aspect('equal'); ax.grid(alpha=.3)
-            ax.set_xlabel('observed share'); ax.set_ylabel(f'predicted {name}')
+            ax.set_xlim(0, 1); ax.set_ylim(0, 1); ax.set_aspect('equal')
+            for e in bins:                                                             # 회색 격자 = 구간 경계 (가로 · 세로 모두, 눈금과 별개로 긋는다)
+                ax.axvline(e, color='0.75', lw=0.6, zorder=1)
+                ax.axhline(e, color='0.75', lw=0.6, zorder=1)                          # 눈금 숫자 = matplotlib 기본 (0.2 간격)
+            ax.set_xlabel(f'predicted {name} (bin mean)'); ax.set_ylabel('observed share')
             note = (notes or {}).get(name, {}).get(stage, '')
             ax.set_title(f'{name} - {stage} calibration' + (f'\n{note}' if note else ''), fontsize=9)
     vals = [int(float(f'{N * q:.1g}')) for q in (0.01, 0.1, 0.5)]           # 범례 n = 전체의 약 1 · 10 · 50 % (유효숫자 1자리)
     hs = [plt.scatter([], [], s=size(v), color='0.55', edgecolor='white') for v in vals]
     fig.legend(hs, [f'{v:,}' for v in vals], title='n (predictions in the bin)', loc='lower center', ncol=len(vals),
                bbox_to_anchor=(0.5, 0.03), fontsize=8, title_fontsize=8, frameon=False, columnspacing=3, handletextpad=1)
-    fig.text(0.5, 0.01, 'held-out genera; one circle per probability bin; circle area is proportional to the share of predictions in the bin',
+    fig.text(0.5, 0.01, 'held-out genera; one circle per probability bin (grey grid lines = bin edges); '
+             'circle area is proportional to the share of predictions in the bin',
              ha='center', fontsize=8, color='#555555')
     fig.suptitle((f'{title}\n' if title else '') + f'n = {N:,}', fontsize=10)
     fig.tight_layout(rect=(0, 0.15 if n == 1 else 0.08, 1, 0.93 if n == 1 else 0.96), h_pad=3); fig.savefig(path, dpi=140); plt.close(fig)

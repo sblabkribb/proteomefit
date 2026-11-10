@@ -143,7 +143,7 @@ def nested_cv(name, df, src, out_dir):
                             **org_summary(tot, base), **org_summary(tot, cols[len(base):])))
             inn_b.append({c: tot_b[c].mean() for c in cols})
             reliability_plot({f'conf_{name}': reliability_table(hit[te], {'before': before[te], 'after': p_te}, BINS)}, f'{jd}/calibration.png', tag,
-                             {f'conf_{name}': {'before': note(tot_b), 'after': note(tot)}})
+                             {f'conf_{name}': {'before': note(tot_b), 'after': note(tot)}}, BINS)
             if name == 'ess':
                 confusion_plot(hit[te], {f'{st} calibration\nMCC {t.mcc.mean():.3f}  recall {t.recall.mean():.3f}  precision {t.precision.mean():.3f}':
                                          (p >= 0.5).astype(int) for st, p, t in (('before', before[te], tot_b), ('after', p_te, tot))},
@@ -166,7 +166,7 @@ def nested_cv(name, df, src, out_dir):
     check = reliability_table(P.hit.values, {'before': P.before.values, 'after': P.after.values}, BINS)
     check.round(4).to_csv(f'{out_dir}/check_calib.csv', index=False)
     reliability_plot({f'conf_{name}': check}, f'{out_dir}/calibration.png', f'conf_{name} - {os.path.basename(os.path.normpath(out_dir))} (genus mean)',
-                     {f'conf_{name}': {'before': note(res_b), 'after': note(res)}})
+                     {f'conf_{name}': {'before': note(res_b), 'after': note(res)}}, BINS)
     return res, cmp, check
 
 
