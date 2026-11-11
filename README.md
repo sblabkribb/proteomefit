@@ -86,6 +86,7 @@ proteomefit/
     ├── 05-conf_fitpred.ipynb     # fitness-prediction confidences
     ├── 06-compare_baselines.ipynb # baselines Geptop 2.0 and ProteomeLM-L (same genus-level CV)
     ├── 07-fitstat_essfn.ipynb    # predicted fitness of essential genes missed by the classifier
+    ├── 08-label_noise.ipynb      # label noise from replicate halves; rationale for |comb_t| >= 2
     ├── input_features.md         # input feature specification (definitions · formulas · preprocessing)
     └── proteomefit/              # shared modules imported by the notebooks
 ```
@@ -101,6 +102,7 @@ proteomefit/
 | 5 | `05-conf_fitpred` | `results/conf_fitpred/` — `calibration.json` (probability tables for `conf_sign` · `conf_fit`), `conf_*/` per-fold and final models · `metrics_total_calib.csv` · `compare_calib.csv` |
 | 6 | `06-compare_baselines` | `results/compare_baselines/` — Geptop 2.0 per-gene scores · per-strain and per-genus metrics · `compare.csv` (Geptop 2.0 and ProteomeLM-L vs ProteomeFit). Needs NCBI BLAST+; no GPU, about 11 h on 16 CPU cores (BLAST of 1,948 strain pairs) |
 | 7 | `07-fitstat_essfn` | `results/fitstat_essfn/` — per-fold fitness models applied to all samples including essential genes; predicted fitness of essential genes missed by the classifier (FN) vs correctly called non-essential genes (TN) (`pred_all.tsv` · `check.csv` · `stats.csv` · `hist_genus.png` · `hist_all.png` · `box_genus.png`) |
+| 8 | `08-label_noise` | `results/label_noise/` — label noise of no-stress fitness from independent replicate halves (split by Time0 set, 24 strains): replication vs `|t|` threshold, noise ceiling vs model Spearman, threshold sensitivity of the fitness model; rationale for the `|comb_t| ≥ 2` evaluation set (`halves.tsv.gz` · `tau_curve.csv` · `ceiling.csv` · `sensitivity.csv` · 4 figures). No GPU, a few minutes |
 
 ### Base data (`data/basedata/`)
 
